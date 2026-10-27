@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
+import com.example.BuildConfig
 import com.example.data.api.AiHairstyleService
 import com.example.data.api.PaidApiTryOnRequest
 import com.example.data.api.PaidApiTryOnResponse
@@ -15,6 +16,7 @@ import com.example.data.model.OverlayTransform
 import com.example.data.model.TryOnError
 import com.example.data.model.UserPhotoSource
 import com.example.engine.HairstyleOverlayEngine
+import com.example.util.SecureStore
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
@@ -39,8 +41,10 @@ object PaidApiTryOnRepository : AiHairstyleService {
     private const val KEY_API_KEY = "paid_api_bearer_token"
     private const val KEY_API_ENGINE_NAME = "paid_api_engine_name"
 
-    const val DEFAULT_API_URL = "https://api.hairstyleai.com/v1/tryon"
-    const val DEFAULT_API_KEY = "live_hair_ai_pro_key"
+    // No default endpoint or token: user photos are only sent to an HTTPS endpoint the owner configured
+    const val DEFAULT_API_URL = ""
+    private const val LEGACY_DEFAULT_API_KEY = "live_hair_ai_pro_key"
+    private const val OVERLAY_NOTE = "On-device hairstyle overlay preview"
     const val DEFAULT_ENGINE_NAME = "Dedicated Hair AI REST API v2.6 (Non-Gemini)"
 
     override val currentModelName: String = "Paid-HairAI-REST-API"
@@ -53,7 +57,9 @@ object PaidApiTryOnRepository : AiHairstyleService {
 
     private val okHttpClient: OkHttpClient by lazy {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            // Bodies contain the user's face photo: never log them. No logging at all in release.
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
+            redactHeader("Authorization")
         }
         OkHttpClient.Builder()
             .addInterceptor(logging)
@@ -84,14 +90,28 @@ object PaidApiTryOnRepository : AiHairstyleService {
         prefs.edit().putString(KEY_API_URL, url.trim()).apply()
     }
 
+    /** True when the owner configured a dedicated HTTPS endpoint. */
+    fun isCustomEndpointConfigured(context: Context): Boolean = isSecureEndpoint(getApiUrl(context))
+
+    internal fun isSecureEndpoint(url: String): Boolean {
+        val trimmed = url.trim()
+        return trimmed.startsWith("https://", ignoreCase = true) && trimmed.length > "https://".length
+    }
+
+    /** Bearer token, decrypted from the Keystore-backed [SecureStore]. */
     fun getApiKey(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_API_KEY, DEFAULT_API_KEY) ?: DEFAULT_API_KEY
+        if (SecureStore.isLegacyPlaintext(prefs, KEY_API_KEY)) {
+            // Migrate tokens saved in plaintext by older versions; drop the old built-in demo token
+            val legacy = prefs.getString(KEY_API_KEY, null).orEmpty().trim()
+            SecureStore.putString(prefs, KEY_API_KEY, if (legacy == LEGACY_DEFAULT_API_KEY) "" else legacy)
+        }
+        return SecureStore.getString(prefs, KEY_API_KEY)
     }
 
     fun setApiKey(context: Context, key: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString(KEY_API_KEY, key.trim()).apply()
+        SecureStore.putString(prefs, KEY_API_KEY, key.trim())
     }
 
     fun getEngineName(context: Context): String {
@@ -119,6 +139,9 @@ object PaidApiTryOnRepository : AiHairstyleService {
         if (url.isBlank()) {
             return@withContext Pair(false, "API Endpoint URL cannot be empty")
         }
+        if (!isSecureEndpoint(url)) {
+            return@withContext Pair(false, "Only secure https:// endpoints are allowed")
+        }
 
         try {
             val authHeader = if (key.isNotBlank()) "Bearer $key" else null
@@ -126,13 +149,11 @@ object PaidApiTryOnRepository : AiHairstyleService {
             if (response.isSuccessful) {
                 Pair(true, "API Connected Successfully (${response.body()?.service ?: "Hair AI Pro"})")
             } else {
-                // If endpoint exists but returned non-200 or custom status
-                Pair(true, "API Endpoint Reachable (HTTP ${response.code()})")
+                Pair(false, "API endpoint returned HTTP ${response.code()}")
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Health ping info: ${e.message}")
-            // Provide friendly status
-            Pair(true, "API Ready: Connected via Secure Dedicated REST Channel")
+            Log.w(TAG, "Health ping failed: ${e.message}")
+            Pair(false, "Could not reach the API endpoint")
         }
     }
 
@@ -153,7 +174,8 @@ object PaidApiTryOnRepository : AiHairstyleService {
         val result = executePaidApiCall(context, baseBmp, overlayAsset, 0f, 1f)
         AiTryOnResult.Success(
             resultBitmap = result.first,
-            isAiGenerated = true,
+            // Only label it AI when the remote engine produced it, not the on-device overlay fallback
+            isAiGenerated = result.second != OVERLAY_NOTE,
             note = result.second
         )
     }
@@ -186,8 +208,8 @@ object PaidApiTryOnRepository : AiHairstyleService {
 
         val authHeader = if (apiKey.isNotBlank()) "Bearer $apiKey" else null
 
-        // 2. Send request to Dedicated REST API
-        try {
+        // 2. Send request to Dedicated REST API (only to an owner-configured HTTPS endpoint)
+        if (isSecureEndpoint(apiUrl)) try {
             val response = retrofitApi.generateHairstyle(
                 endpointUrl = apiUrl,
                 authorization = authHeader,
@@ -228,7 +250,7 @@ object PaidApiTryOnRepository : AiHairstyleService {
             userBitmap
         }
 
-        Pair(finalBmp, "Generated via Dedicated Hair AI REST API (Connected)")
+        Pair(finalBmp, OVERLAY_NOTE)
     }
 
     private fun bitmapToBase64(bitmap: Bitmap): String {

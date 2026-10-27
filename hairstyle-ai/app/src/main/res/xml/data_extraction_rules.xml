@@ -1,19 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Backup and device-transfer rules for Android 12 (API 31) and higher.
    See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+   API tokens are encrypted with a device-bound Android Keystore key, so they are never copied.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <exclude domain="sharedpref" path="paid_hairstyle_api_prefs.xml" />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <exclude domain="sharedpref" path="paid_hairstyle_api_prefs.xml" />
     </device-transfer>
-    -->
 </data-extraction-rules>

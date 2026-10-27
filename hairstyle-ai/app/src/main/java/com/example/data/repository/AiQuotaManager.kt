@@ -1,32 +1,64 @@
 package com.example.data.repository
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.example.data.api.AiTryOnConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import java.util.Calendar
+import java.util.Locale
 
 /**
- * Modular usage and quota manager for development/testing on Google Gemini Free Tier.
- * Tracks remaining free generation attempts, preventing excessive or unnecessary API requests.
+ * Daily free AI preview quota.
+ *
+ * Usage is persisted per calendar day, so the limit survives app restarts and resets at local
+ * midnight. This is a client-side guard against accidental overuse; hard limits must also be
+ * enforced server-side (Firebase AI Logic quotas / App Check), since a device's storage and clock
+ * can be tampered with.
  */
 object AiQuotaManager {
 
+    private const val PREFS_NAME = "ai_quota_prefs"
+    private const val KEY_DAY = "quota_day"
+    private const val KEY_USED = "quota_used"
+
     val maxDailyLimit: Int = AiTryOnConfig.FREE_DAILY_TRY_LIMIT
+
+    private var prefs: SharedPreferences? = null
+    private var day: String = ""
+    private var used: Int = 0
+
+    /** Returns the current calendar day key; replaceable in tests. */
+    internal var dayProvider: () -> String = ::currentDayKey
 
     private val _remainingAttempts = MutableStateFlow(maxDailyLimit)
     val remainingAttempts: StateFlow<Int> = _remainingAttempts.asStateFlow()
 
+    /** Loads persisted usage. Called once from the Application. */
+    @Synchronized
+    fun init(context: Context) {
+        val store = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs = store
+        day = store.getString(KEY_DAY, "").orEmpty()
+        used = store.getInt(KEY_USED, 0).coerceIn(0, maxDailyLimit)
+        refreshDay()
+    }
+
     /**
-     * Checks if the user has available free attempts remaining.
+     * Checks if the user has available free attempts remaining today.
      */
-    fun canGenerate(): Boolean = _remainingAttempts.value > 0
+    @Synchronized
+    fun canGenerate(): Boolean {
+        refreshDay()
+        return used < maxDailyLimit
+    }
 
     /**
      * Returns formatted counter text, e.g., "Free previews remaining: 2/3"
      */
     fun getQuotaStatusText(): String {
-        return "Free previews remaining: ${_remainingAttempts.value}/$maxDailyLimit"
+        return "Free previews remaining: ${remainingAttempts.value}/$maxDailyLimit"
     }
 
     /**
@@ -34,16 +66,52 @@ object AiQuotaManager {
      * Decrements the remaining counter ONLY on success.
      * Failed API requests do NOT decrement the counter.
      */
+    @Synchronized
     fun recordSuccess() {
-        _remainingAttempts.update { current ->
-            if (current > 0) current - 1 else 0
+        refreshDay()
+        used = (used + 1).coerceAtMost(maxDailyLimit)
+        persist()
+        publish()
+    }
+
+    /** Re-checks the date so a new day's quota shows up without restarting the app. */
+    @Synchronized
+    fun refreshDay() {
+        val today = dayProvider()
+        if (today != day) {
+            day = today
+            used = 0
+            persist()
         }
+        publish()
     }
 
     /**
-     * Helper to reset quota during testing or when a new day arrives.
+     * Helper to reset quota during development/testing.
      */
+    @Synchronized
     fun resetQuotaForTesting() {
-        _remainingAttempts.value = maxDailyLimit
+        used = 0
+        persist()
+        publish()
+    }
+
+    private fun publish() {
+        _remainingAttempts.value = (maxDailyLimit - used).coerceAtLeast(0)
+    }
+
+    private fun persist() {
+        prefs?.edit()?.putString(KEY_DAY, day)?.putInt(KEY_USED, used)?.apply()
+    }
+
+    private fun currentDayKey(): String {
+        val now = Calendar.getInstance()
+        return String.format(
+            Locale.US,
+            "%04d-%02d-%02d",
+            now.get(Calendar.YEAR),
+            now.get(Calendar.MONTH) + 1,
+            now.get(Calendar.DAY_OF_MONTH)
+        )
     }
 }

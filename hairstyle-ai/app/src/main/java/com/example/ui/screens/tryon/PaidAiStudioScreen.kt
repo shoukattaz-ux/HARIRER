@@ -1,5 +1,8 @@
 package com.example.ui.screens.tryon
 
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
@@ -1132,6 +1135,9 @@ fun PaidAiStudioScreen(
                         onValueChange = { apiKeyInput = it },
                         label = { Text("Authorization Key / Bearer Token") },
                         singleLine = true,
+                        // Mask the token and keep it out of keyboard learning/suggestions
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth()
                     )
 

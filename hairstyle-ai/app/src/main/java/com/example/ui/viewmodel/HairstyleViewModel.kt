@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.BuildConfig
 import com.example.R
 import com.example.analysis.HairColorAdvisor
 import com.example.data.api.AiHairstyleService
@@ -307,6 +308,68 @@ class HairstyleViewModel(
         _processingStage.value = ProcessingStage.ANALYZING_FACE
     }
 
+    // Consent before any photo leaves the device for AI processing (asked once, remembered)
+    private val _hasAiPhotoConsent = MutableStateFlow(themePrefs.getBoolean(PREF_AI_PHOTO_CONSENT, false))
+    val hasAiPhotoConsent: StateFlow<Boolean> = _hasAiPhotoConsent.asStateFlow()
+
+    private val _showAiConsentDialog = MutableStateFlow(false)
+    val showAiConsentDialog: StateFlow<Boolean> = _showAiConsentDialog.asStateFlow()
+
+    private var pendingConsentAction: (() -> Unit)? = null
+    private var pendingConsentDeclined: (() -> Unit)? = null
+
+    /**
+     * Returns true when the user already agreed to AI photo processing. Otherwise shows the consent
+     * dialog, remembers [action] to run after "Allow" (or [onDeclined] after "Not now"), and returns false.
+     */
+    private fun ensureAiPhotoConsent(action: () -> Unit, onDeclined: () -> Unit = {}): Boolean {
+        if (_hasAiPhotoConsent.value) return true
+        pendingConsentAction = action
+        pendingConsentDeclined = onDeclined
+        _showAiConsentDialog.value = true
+        return false
+    }
+
+    fun acceptAiPhotoConsent() {
+        themePrefs.edit().putBoolean(PREF_AI_PHOTO_CONSENT, true).apply()
+        _hasAiPhotoConsent.value = true
+        _showAiConsentDialog.value = false
+        val action = pendingConsentAction
+        pendingConsentAction = null
+        pendingConsentDeclined = null
+        action?.invoke()
+    }
+
+    fun declineAiPhotoConsent() {
+        _showAiConsentDialog.value = false
+        val declined = pendingConsentDeclined
+        pendingConsentAction = null
+        pendingConsentDeclined = null
+        declined?.invoke()
+        _userFeedback.value = AI_CONSENT_DECLINED_MESSAGE
+    }
+
+    /** Lets the user withdraw consent; AI previews will ask again next time. */
+    fun revokeAiPhotoConsent() {
+        themePrefs.edit().putBoolean(PREF_AI_PHOTO_CONSENT, false).apply()
+        _hasAiPhotoConsent.value = false
+    }
+
+    /**
+     * Premium "unlimited AI" only applies once purchases are verified with Google Play Billing
+     * (see [AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED]); until then everyone uses the daily free quota.
+     */
+    private val hasUnlimitedAi: Boolean
+        get() = _isPaidVersion.value && AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED
+
+    /** Premium uses a dedicated engine only when its owner configured one; otherwise Gemini. */
+    private fun tryOnService(): AiHairstyleService =
+        if (_isPaidVersion.value && PaidApiTryOnRepository.isCustomEndpointConfigured(getApplication())) {
+            PaidApiTryOnRepository
+        } else {
+            aiService
+        }
+
     /**
      * Executes the AI hairstyle transformation workflow:
      * User Photo -> Selected Hairstyle -> Check Free Usage Limit -> AI Request -> Result
@@ -328,8 +391,17 @@ class HairstyleViewModel(
             return
         }
 
+        // Privacy: the photo is only sent for AI processing after the user agreed
+        if (!ensureAiPhotoConsent(
+                action = { startRealAiTryOn(context, onSuccess, onError) },
+                onDeclined = { onError(AI_CONSENT_DECLINED_MESSAGE) }
+            )
+        ) {
+            return
+        }
+
         // Cost Protection 2: Check Free Usage Limit before making any network call
-        if (!quotaManager.canGenerate()) {
+        if (!hasUnlimitedAi && !quotaManager.canGenerate()) {
             val error = TryOnError.QuotaExceeded
             _tryOnError.value = error
             _aiErrorMessage.value = error.message
@@ -371,12 +443,8 @@ class HairstyleViewModel(
                 }
             }
 
-            // Call AI service: If user is on Paid Version, use Dedicated REST API (decoupled from Gemini)
-            val serviceToUse = if (_isPaidVersion.value) {
-                com.example.data.repository.PaidApiTryOnRepository
-            } else {
-                aiService
-            }
+            // Call AI service: Gemini, or the owner-configured dedicated REST API for Premium
+            val serviceToUse = tryOnService()
             val result = serviceToUse.transformHairstyle(
                 context = context,
                 userPhoto = photo,
@@ -390,7 +458,7 @@ class HairstyleViewModel(
             when (result) {
                 is AiTryOnResult.Success -> {
                     // Cost Protection 3: Decrement free quota ONLY on successful generation
-                    quotaManager.recordSuccess()
+                    if (!hasUnlimitedAi) quotaManager.recordSuccess()
 
                     _aiResultBitmap.value = result.resultBitmap
                     _isAiGenerated.value = result.isAiGenerated
@@ -438,6 +506,7 @@ class HairstyleViewModel(
      * Free tier: only as many tiles as the remaining free previews allow; the rest stay locked.
      */
     fun startStyleGrid(context: Context, styles: List<HairstyleItem>) {
+        if (!ensureAiPhotoConsent(action = { startStyleGrid(context, styles) })) return
         val photo = _userPhoto.value
         if (photo == null) {
             _userFeedback.value = TryOnError.NoPhotoSelected.message
@@ -486,11 +555,11 @@ class HairstyleViewModel(
     }
 
     private fun runStyleGrid(context: Context, photo: UserPhotoSource, indices: List<Int>) {
-        val isPaid = _isPaidVersion.value
-        // Same routing as single try-on: Paid uses the dedicated REST API, Free uses Gemini
-        val service: AiHairstyleService = if (isPaid) PaidApiTryOnRepository else aiService
-        // The free preview quota only limits the free tier
-        val allowed = if (isPaid) indices.size else minOf(indices.size, quotaManager.remainingAttempts.value)
+        val isUnlimited = hasUnlimitedAi
+        // Same routing as single try-on
+        val service = tryOnService()
+        quotaManager.refreshDay()
+        val allowed = if (isUnlimited) indices.size else minOf(indices.size, quotaManager.remainingAttempts.value)
         val styles = _styleGrid.value.styles
         val tint = _selectedColorTint.value
 
@@ -505,7 +574,7 @@ class HairstyleViewModel(
                     generate = { style ->
                         val result = service.transformHairstyle(context, photo, style, tint)
                         if (result is AiTryOnResult.Success) {
-                            if (!isPaid) quotaManager.recordSuccess()
+                            if (!isUnlimited) quotaManager.recordSuccess()
                             _tryOnHistory.update { history ->
                                 listOf(
                                     TryOnHistoryItem(
@@ -557,10 +626,11 @@ class HairstyleViewModel(
         val style = _activeTryOnItem.value ?: return
         val state = _sceneStudio.value
         if (state.isGenerating) return
+        if (!ensureAiPhotoConsent(action = { generateScene(context, scene, renderStyle) })) return
 
         val key = SceneStudioState.key(scene, renderStyle)
-        val isPaid = _isPaidVersion.value
-        if (!isPaid && !quotaManager.canGenerate()) {
+        val isUnlimited = hasUnlimitedAi
+        if (!isUnlimited && !quotaManager.canGenerate()) {
             _sceneStudio.update { it.copy(scenes = it.scenes + (key to GridTileState.Locked)) }
             return
         }
@@ -573,7 +643,7 @@ class HairstyleViewModel(
                 val prompt = ScenePromptBuilder.buildScenePrompt(style, scene, renderStyle)
                 val tile = when (val result = sceneService.editImage(appContext, UserPhotoSource.Captured(source), prompt)) {
                     is AiTryOnResult.Success -> {
-                        if (!isPaid) quotaManager.recordSuccess()
+                        if (!isUnlimited) quotaManager.recordSuccess()
                         GridTileState.Ready(result.resultBitmap, result.isAiGenerated)
                     }
                     is AiTryOnResult.Error -> GridTileState.Failed(
@@ -629,6 +699,7 @@ class HairstyleViewModel(
      * Resets quota during development/testing.
      */
     fun resetQuotaForTesting() {
+        if (!BuildConfig.DEBUG) return
         quotaManager.resetQuotaForTesting()
         _tryOnError.value = null
         _aiErrorMessage.value = null
@@ -687,5 +758,11 @@ class HairstyleViewModel(
 
     fun showFeedback(msg: String) {
         _userFeedback.value = msg
+    }
+
+    private companion object {
+        const val PREF_AI_PHOTO_CONSENT = "pref_ai_photo_consent"
+        const val AI_CONSENT_DECLINED_MESSAGE =
+            "AI previews need your permission to process your photo. Face scan and style advice still work on-device."
     }
 }

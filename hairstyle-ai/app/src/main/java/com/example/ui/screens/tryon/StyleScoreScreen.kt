@@ -141,8 +141,11 @@ fun StyleScoreScreen(
                 val uri = withContext(Dispatchers.IO) {
                     GallerySaver.saveBitmapToGallery(context, story, "HairLook_StyleScore_${System.currentTimeMillis()}")
                 }
-                if (uri != null) GallerySaver.shareImage(context, uri)
-                else shareMessage = "Couldn't save your story. Please check storage access and try again."
+                if (uri != null) {
+                    GallerySaver.shareImage(context, uri)
+                } else {
+                    shareMessage = "Couldn't save your story. Please check storage access and try again."
+                }
             } catch (e: Exception) {
                 shareMessage = "Couldn't create the story image. Please try again."
             } finally {

@@ -25,7 +25,6 @@ import com.example.data.model.UserPhotoSource
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -71,7 +70,9 @@ object GeminiTryOnRepository : AiHairstyleService, AiImageEditService {
         .readTimeout(45, TimeUnit.SECONDS)
         .writeTimeout(45, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            // Never log in release builds; never log the API key header
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
+            redactHeader("x-goog-api-key")
         })
         .build()
 
@@ -84,18 +85,22 @@ object GeminiTryOnRepository : AiHairstyleService, AiImageEditService {
             .create(GeminiApiService::class.java)
     }
 
-    override fun hasValidCredentials(): Boolean = hasValidApiKey()
+    override fun hasValidCredentials(): Boolean =
+        AiBackendConfig.isFirebaseConfigured || (AiBackendConfig.isClientKeyAllowed && hasValidApiKey())
 
     /**
      * Checks if a non-placeholder Gemini API key is configured in BuildConfig.
      */
-    fun hasValidApiKey(): Boolean {
+    fun hasValidApiKey(): Boolean = clientApiKey().isNotBlank()
+
+    /** The development client key, or "" when missing, a placeholder, or stripped from this build. */
+    private fun clientApiKey(): String {
         val key = try {
             BuildConfig.GEMINI_API_KEY
         } catch (e: Throwable) {
             ""
         }
-        return !key.isNullOrBlank() && key != "MY_GEMINI_API_KEY"
+        return if (key.isNullOrBlank() || key == "MY_GEMINI_API_KEY") "" else key
     }
 
     /**
@@ -122,27 +127,36 @@ object GeminiTryOnRepository : AiHairstyleService, AiImageEditService {
         photo: UserPhotoSource,
         prompt: String
     ): AiTryOnResult = withContext(Dispatchers.IO) {
-        val apiKey = try {
-            BuildConfig.GEMINI_API_KEY
-        } catch (e: Throwable) {
-            ""
-        }
-
-        // 1. Validate API Key
-        if (apiKey.isBlank() || apiKey == "MY_GEMINI_API_KEY") {
-            Log.w(TAG, "No valid Gemini API key configured.")
-            return@withContext AiTryOnResult.Error(
-                TryOnError.MissingApiKey,
-                "Gemini API key is required. Please add your GEMINI_API_KEY in the AI Studio Secrets panel."
-            )
-        }
-
-        // 2. Decode & normalize user photo
+        // 1. Decode & normalize user photo
         val photoBitmap = resolveToBitmap(context, photo)
         if (photoBitmap == null) {
             return@withContext AiTryOnResult.Error(
                 TryOnError.InvalidImageFormat,
                 "Please choose a clear face photo and try again."
+            )
+        }
+
+        // 2. Preferred backend: Firebase AI Logic. No API key ships in the app and
+        //    requests are protected by Firebase App Check.
+        if (AiBackendConfig.isFirebaseConfigured) {
+            return@withContext FirebaseAiImageService.editImage(photoBitmap, prompt, currentModelName)
+        }
+
+        // 3. Development fallback: direct Gemini REST call with a client-side key.
+        //    Disabled in release builds unless explicitly allowed (see build.gradle.kts).
+        if (!AiBackendConfig.isClientKeyAllowed) {
+            Log.w(TAG, "No secure AI backend configured for this build.")
+            return@withContext AiTryOnResult.Error(
+                TryOnError.MissingApiKey,
+                "AI previews are not set up yet. Connect Firebase AI Logic to enable them."
+            )
+        }
+        val apiKey = clientApiKey()
+        if (apiKey.isBlank()) {
+            Log.w(TAG, "No valid Gemini API key configured.")
+            return@withContext AiTryOnResult.Error(
+                TryOnError.MissingApiKey,
+                "Gemini API key is required. Please add your GEMINI_API_KEY in the AI Studio Secrets panel."
             )
         }
 
@@ -172,7 +186,6 @@ object GeminiTryOnRepository : AiHairstyleService, AiImageEditService {
         // Single controlled request to primary model (gemini-2.5-flash-image)
         try {
             Log.d(TAG, "Executing single AI hairstyle request with $currentModelName")
-            delay(1500)
             val response = apiService.generateHairstyleImage(
                 model = currentModelName,
                 apiKey = apiKey,

@@ -1,5 +1,10 @@
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
 
+// Release builds must not ship the Gemini API key: AI calls go through Firebase AI Logic + App Check.
+// Set hairlook.allowClientGeminiKeyInRelease=true in gradle.properties only as a temporary escape hatch.
+val allowClientGeminiKeyInRelease =
+  (findProperty("hairlook.allowClientGeminiKeyInRelease") as String?)?.toBoolean() ?: false
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
@@ -40,12 +45,16 @@ android {
 
   buildTypes {
     release {
+      buildConfigField("boolean", "ALLOW_CLIENT_GEMINI_KEY", allowClientGeminiKeyInRelease.toString())
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }
-    debug { signingConfig = signingConfigs.getByName("debugConfig") }
+    debug {
+      buildConfigField("boolean", "ALLOW_CLIENT_GEMINI_KEY", "true")
+      signingConfig = signingConfigs.getByName("debugConfig")
+    }
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -71,6 +80,22 @@ secrets {
 }
 
 googleServices { missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN }
+
+// Overrides the key injected by the Secrets plugin so release APKs/AABs never contain it.
+androidComponents {
+  onVariants(selector().withBuildType("release")) { variant ->
+    if (!allowClientGeminiKeyInRelease) {
+      variant.buildConfigFields?.put(
+        "GEMINI_API_KEY",
+        com.android.build.api.variant.BuildConfigField(
+          "String",
+          "\"\"",
+          "Stripped from release builds; use Firebase AI Logic"
+        )
+      )
+    }
+  }
+}
 
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
@@ -113,6 +138,7 @@ dependencies {
   // implementation(libs.googleid)
   implementation(libs.firebase.appcheck.recaptcha)
   implementation(libs.firebase.appcheck.debug)
+  implementation(libs.firebase.appcheck.playintegrity)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.logging.interceptor)

@@ -8,7 +8,10 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -21,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.analysis.StyleScoreCalculator
+import com.example.data.api.AiTryOnConfig
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.model.Gender
@@ -94,6 +98,9 @@ fun HairStyleApp(
     val sceneStudio by viewModel.sceneStudio.collectAsState()
     val confirmedFaceShape by viewModel.confirmedFaceShape.collectAsState()
     val skinUndertone by viewModel.skinUndertone.collectAsState()
+    val showAiConsentDialog by viewModel.showAiConsentDialog.collectAsState()
+    // Unlimited AI only once Premium purchases are verified (see AiTryOnConfig)
+    val hasUnlimitedAi = isPaidVersion && AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED
     val context = LocalContext.current
 
     var quickChoiceItem by remember { mutableStateOf<HairstyleItem?>(null) }
@@ -187,6 +194,27 @@ fun HairStyleApp(
                 viewModel.subscribePaidVersion {
                     showSceneUpgradeDialog = false
                 }
+            }
+        )
+    }
+
+    // Privacy consent before a photo is sent for AI processing
+    if (showAiConsentDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.declineAiPhotoConsent() },
+            title = { Text("Allow AI photo processing?") },
+            text = {
+                Text(
+                    "To create AI previews, your photo is sent securely to Google's Gemini AI service " +
+                        "for processing and the result is returned to your phone. HairLook does not keep " +
+                        "your photo on any server. Face scan and style advice always run on your device."
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.acceptAiPhotoConsent() }) { Text("Allow") }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.declineAiPhotoConsent() }) { Text("Not now") }
             }
         )
     }
@@ -379,7 +407,7 @@ fun HairStyleApp(
                         StyleGridScreen(
                             gridState = styleGrid,
                             userPhoto = userPhoto,
-                            isPaidVersion = isPaidVersion,
+                            isPaidVersion = hasUnlimitedAi,
                             remainingFreeQuota = remainingFreeQuota,
                             maxDailyQuota = viewModel.maxDailyQuota,
                             onOpenResult = { index ->
@@ -389,8 +417,13 @@ fun HairStyleApp(
                             },
                             onRetryTile = { index -> viewModel.retryStyleGridTile(context, index) },
                             onUnlockLocked = {
-                                if (isPaidVersion) viewModel.unlockStyleGridTiles(context)
-                                else showGridUpgradeDialog = true
+                                when {
+                                    hasUnlimitedAi -> viewModel.unlockStyleGridTiles(context)
+                                    AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED -> {
+                                        showGridUpgradeDialog = true
+                                    }
+                                    else -> viewModel.showFeedback("Free AI previews reset every day. Come back tomorrow for more looks!")
+                                }
                             },
                             onBack = { popBack() }
                         )
@@ -407,13 +440,19 @@ fun HairStyleApp(
                             lookBitmap = aiResultBitmap,
                             styleScore = score,
                             sceneStudio = sceneStudio,
-                            isPaidVersion = isPaidVersion,
+                            isPaidVersion = hasUnlimitedAi,
                             remainingFreeQuota = remainingFreeQuota,
                             maxDailyQuota = viewModel.maxDailyQuota,
                             onGenerateScene = { scene, renderStyle ->
                                 viewModel.generateScene(context, scene, renderStyle)
                             },
-                            onUpgrade = { showSceneUpgradeDialog = true },
+                            onUpgrade = {
+                                if (AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED) {
+                                    showSceneUpgradeDialog = true
+                                } else {
+                                    viewModel.showFeedback("Free AI previews reset every day. Come back tomorrow for more scenes!")
+                                }
+                            },
                             onBack = { popBack() }
                         )
                     }

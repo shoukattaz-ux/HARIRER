@@ -29,6 +29,14 @@ object AiTryOnConfig {
     const val MODEL_DISPLAY_NAME = "Google Gemini 2.5 Flash Image"
 
     /**
+     * Whether Premium members skip the daily free limit.
+     * Keep false until Premium purchases are verified with Google Play Billing (ideally server-side):
+     * the current upgrade flow is not a real payment, so enabling this would give anyone
+     * unlimited AI generations on the app's account.
+     */
+    const val PREMIUM_UNLIMITED_AI_ENABLED = false
+
+    /**
      * Free Tier optimization flag.
      */
     const val IS_FREE_TIER = true

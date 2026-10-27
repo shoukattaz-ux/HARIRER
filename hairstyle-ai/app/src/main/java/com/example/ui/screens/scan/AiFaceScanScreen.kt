@@ -283,9 +283,13 @@ fun AiFaceScanScreen(
                     GallerySaver.saveBitmapToGallery(context, bitmap, "HairLook_StyleAdvice_${System.currentTimeMillis()}")
                 }
                 when {
-                    uri == null -> exportMessage = "Couldn't save the report. Please check storage access and try again."
+                    uri == null -> {
+                        exportMessage = "Couldn't save the report. Please check storage access and try again."
+                    }
                     share -> GallerySaver.shareImage(context, uri)
-                    else -> exportMessage = "Saved to Pictures/HairLook"
+                    else -> {
+                        exportMessage = "Saved to Pictures/HairLook"
+                    }
                 }
             } catch (e: Exception) {
                 exportMessage = "Couldn't create the report image. Please try again."
