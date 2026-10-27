@@ -1,0 +1,48 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Black Moto Leather Jacket Body -->
+    <path
+        android:fillColor="#18181B"
+        android:strokeColor="#09090B"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L35,700 L665,700 L650,320 L580,235 L460,190 L395,260 L350,290 L305,260 Z" />
+
+    <!-- Dark Charcoal Inner Tee -->
+    <path
+        android:fillColor="#27272A"
+        android:pathData="M305,250 L350,320 L395,250 Z" />
+
+    <!-- Asymmetrical Diagonal Zipper -->
+    <path
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="4"
+        android:pathData="M330,260 L370,700" />
+
+    <!-- Moto Lapels with Silver Snaps -->
+    <path
+        android:fillColor="#27272A"
+        android:strokeColor="#09090B"
+        android:strokeWidth="2"
+        android:pathData="M260,200 L365,370 L310,380 L230,270 Z" />
+    <path
+        android:fillColor="#27272A"
+        android:strokeColor="#09090B"
+        android:strokeWidth="2"
+        android:pathData="M440,200 L375,370 L410,380 L470,270 Z" />
+
+    <path
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#64748B"
+        android:strokeWidth="1.5"
+        android:pathData="M250,245 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M440,245 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+
+    <!-- Slanted Zipper Pockets -->
+    <path
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="3.5"
+        android:pathData="M180,450 L260,430 M440,430 L520,450" />
+</vector>

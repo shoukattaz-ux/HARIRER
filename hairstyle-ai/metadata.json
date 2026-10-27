@@ -1,0 +1,6 @@
+{
+  "name": "HairLook",
+  "description": "Professional hairstyle discovery and virtual try-on app for men and women.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

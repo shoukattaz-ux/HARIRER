@@ -1,0 +1,293 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="1400dp"
+    android:viewportWidth="800"
+    android:viewportHeight="1400">
+
+    <!-- ================= 1. STUDIO DISPLAY STAND & SHADOW ================= -->
+    <!-- Floor Drop Shadow -->
+    <path
+        android:fillColor="#000000"
+        android:alpha="0.45"
+        android:pathData="M160,1355 C160,1335 640,1335 640,1355 C640,1375 160,1375 160,1355 Z" />
+
+    <!-- Chrome/Metallic Square Base Plate -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#64748B"
+        android:strokeWidth="2"
+        android:pathData="M240,1340 L560,1340 L545,1360 L255,1360 Z" />
+    <path
+        android:fillColor="#475569"
+        android:pathData="M260,1343 L540,1343 L530,1355 L270,1355 Z" />
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M280,1345 L520,1345 L515,1348 L285,1348 Z" />
+
+    <!-- ================= 2. POLISHED BLACK OXFORD DRESS SHOES ================= -->
+    <!-- Left Shoe -->
+    <path
+        android:fillColor="#09090B"
+        android:strokeColor="#27272A"
+        android:strokeWidth="1.5"
+        android:pathData="M245,1335 C245,1315 375,1315 375,1335 L370,1345 C330,1348 270,1348 250,1345 Z" />
+    <path
+        android:fillColor="#18181B"
+        android:strokeColor="#3F3F46"
+        android:strokeWidth="1.5"
+        android:pathData="M255,1235 L360,1235 L372,1325 C360,1335 260,1335 248,1325 Z" />
+    <!-- Left Shoe Gloss Highlight -->
+    <path
+        android:fillColor="#3F3F46"
+        android:pathData="M275,1300 C295,1294 330,1294 345,1300 L365,1326 C350,1332 270,1332 255,1326 Z" />
+    <path
+        android:fillColor="#71717A"
+        android:alpha="0.4"
+        android:pathData="M280,1310 C300,1306 325,1306 340,1310 L345,1318 C330,1321 295,1321 280,1318 Z" />
+
+    <!-- Right Shoe -->
+    <path
+        android:fillColor="#09090B"
+        android:strokeColor="#27272A"
+        android:strokeWidth="1.5"
+        android:pathData="M425,1335 C425,1315 555,1315 555,1335 L550,1345 C510,1348 450,1348 430,1345 Z" />
+    <path
+        android:fillColor="#18181B"
+        android:strokeColor="#3F3F46"
+        android:strokeWidth="1.5"
+        android:pathData="M440,1235 L545,1235 L552,1325 C540,1335 440,1335 428,1325 Z" />
+    <!-- Right Shoe Gloss Highlight -->
+    <path
+        android:fillColor="#3F3F46"
+        android:pathData="M455,1300 C475,1294 510,1294 525,1300 L545,1326 C530,1332 450,1332 435,1326 Z" />
+    <path
+        android:fillColor="#71717A"
+        android:alpha="0.4"
+        android:pathData="M460,1310 C480,1306 505,1306 520,1310 L525,1318 C510,1321 475,1321 460,1318 Z" />
+
+    <!-- ================= 3. CHARCOAL GREY PLEATED FORMAL TROUSERS ================= -->
+    <!-- Main Pants Base Shape -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M255,620 L545,620 L560,920 L550,1240 L440,1240 L415,910 L385,910 L360,1240 L250,1240 L240,920 Z" />
+
+    <!-- Inseam & Crotch Shadow -->
+    <path
+        android:fillColor="#0F172A"
+        android:alpha="0.5"
+        android:pathData="M380,880 L420,880 L415,930 L385,930 Z" />
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2.5"
+        android:pathData="M400,620 L400,900" />
+
+    <!-- Left Leg Center Crease (Sharp Pressed Wool Crease) -->
+    <path
+        android:strokeColor="#64748B"
+        android:strokeWidth="2"
+        android:pathData="M305,640 L305,1235" />
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1.5"
+        android:pathData="M307,640 L307,1235" />
+
+    <!-- Right Leg Center Crease -->
+    <path
+        android:strokeColor="#64748B"
+        android:strokeWidth="2"
+        android:pathData="M495,640 L495,1235" />
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1.5"
+        android:pathData="M497,640 L497,1235" />
+
+    <!-- Pant Cuffs Bottom Trim -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M250,1232 h110 v10 h-110 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M440,1232 h110 v10 h-110 Z" />
+
+    <!-- ================= 4. MANNEQUIN ARMS & SLEEVES ================= -->
+    <!-- Left Forearm (Charcoal Suit Sleeve) -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M165,260 L120,440 L140,590 L180,670 L220,660 L190,550 L175,440 L225,305 Z" />
+    <!-- Left Sleeve Cuff & Buttons (4 horn buttons) -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M178,665 L220,655 L223,680 L180,690 Z" />
+    <path android:fillColor="#0F172A" android:pathData="M188,672 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M196,670 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M204,668 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M212,666 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- Left Sculpted Hand Form -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="1.5"
+        android:pathData="M182,690 L222,680 C226,695 224,730 219,750 L209,765 L199,765 L194,740 L189,765 L184,760 C180,740 178,705 182,690 Z" />
+
+    <!-- Right Forearm (Charcoal Suit Sleeve) -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M635,260 L680,440 L660,590 L620,670 L580,660 L610,550 L625,440 L575,305 Z" />
+    <!-- Right Sleeve Cuff & Buttons -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M622,665 L580,655 L577,680 L620,690 Z" />
+    <path android:fillColor="#0F172A" android:pathData="M608,672 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M600,670 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M592,668 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M584,666 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- Right Sculpted Hand Form -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="1.5"
+        android:pathData="M618,690 L578,680 C574,695 576,730 581,750 L591,765 L601,765 L606,740 L611,765 L616,760 C620,740 622,705 618,690 Z" />
+
+    <!-- ================= 5. CHARCOAL DOUBLE-BREASTED JACKET BODY ================= -->
+    <!-- Jacket Torso -->
+    <path
+        android:fillColor="#475569"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2.5"
+        android:pathData="M225,260 L575,260 L560,650 L240,650 Z" />
+
+    <!-- Overlapping Double-Breasted Left Front Panel -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M260,260 L510,260 L495,650 L245,650 Z" />
+
+    <!-- Flap Pockets -->
+    <!-- Left Flap Pocket -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#64748B"
+        android:strokeWidth="1"
+        android:pathData="M260,540 h85 v18 h-85 Z" />
+    <!-- Right Flap Pocket -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#64748B"
+        android:strokeWidth="1"
+        android:pathData="M455,540 h85 v18 h-85 Z" />
+
+    <!-- Welt Pocket with Burgundy Pocket Square -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#64748B"
+        android:strokeWidth="1"
+        android:pathData="M280,360 h65 v8 h-65 Z" />
+    <!-- Burgundy Silk Pocket Square (Triangular Peaks) -->
+    <path
+        android:fillColor="#9F1239"
+        android:pathData="M295,360 L305,342 L315,360 Z" />
+    <path
+        android:fillColor="#BE123C"
+        android:pathData="M310,360 L320,338 L330,360 Z" />
+
+    <!-- ================= 6. 6 HORN BUTTONS (DOUBLE-BREASTED ARRANGEMENT) ================= -->
+    <!-- Top Row -->
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M360,420 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M426,420 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+
+    <!-- Middle Fastening Row -->
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M365,490 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M421,490 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+
+    <!-- Bottom Fastening Row -->
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M370,560 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#0F172A" android:strokeColor="#64748B" android:strokeWidth="1.5"
+        android:pathData="M416,560 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+
+    <!-- ================= 7. SHARP PEAK LAPELS (DOUBLE-BREASTED TRADEMARK) ================= -->
+    <!-- Left Peak Lapel -->
+    <path
+        android:fillColor="#475569"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2.5"
+        android:pathData="M320,230 L395,440 L345,430 L260,335 L335,325 Z" />
+    <path
+        android:fillColor="#64748B"
+        android:alpha="0.25"
+        android:pathData="M320,230 L385,430 L345,420 Z" />
+
+    <!-- Right Peak Lapel -->
+    <path
+        android:fillColor="#475569"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2.5"
+        android:pathData="M480,230 L405,440 L455,430 L540,335 L465,325 Z" />
+    <path
+        android:fillColor="#64748B"
+        android:alpha="0.25"
+        android:pathData="M480,230 L415,430 L455,420 Z" />
+
+    <!-- Lapel Buttonhole (Left Lapel Flower/Pin Hole) -->
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M312,280 L322,292" />
+
+    <!-- ================= 8. CRISP SHIRT COLLAR, TIE & NECK PEDESTAL ================= -->
+    <!-- Shirt Center V-Opening -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1.5"
+        android:pathData="M350,225 L450,225 L400,370 Z" />
+
+    <!-- Burgundy Silk Necktie with Windsor Knot -->
+    <path
+        android:fillColor="#881337"
+        android:strokeColor="#4C0519"
+        android:strokeWidth="1.5"
+        android:pathData="M380,265 L420,265 L412,320 L388,320 Z" />
+    <path
+        android:fillColor="#9F1239"
+        android:strokeColor="#4C0519"
+        android:strokeWidth="1.5"
+        android:pathData="M388,320 L412,320 L420,440 L400,470 L380,440 Z" />
+    <!-- Tie Bar (Silver Clip) -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="1"
+        android:pathData="M382,375 h36 v4 h-36 Z" />
+
+    <!-- Shirt Left Collar Wing -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M330,220 L395,310 L380,265 L335,225 Z" />
+    <!-- Shirt Right Collar Wing -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M470,220 L405,310 L420,265 L465,225 Z" />
+
+    <!-- Sculpted Mannequin Neck Mounting Opening -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M330,220 C355,248 445,248 470,220 C450,205 350,205 330,220 Z" />
+</vector>

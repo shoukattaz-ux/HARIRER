@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Emerald Satin Evening Gown Body -->
+    <path
+        android:fillColor="#065F46"
+        android:strokeColor="#047857"
+        android:strokeWidth="3"
+        android:pathData="M250,210 L150,250 L80,330 L60,690 L640,690 L620,330 L550,250 L450,210 L395,275 L350,295 L305,275 Z" />
+
+    <!-- Sweetheart Neckline Drapes -->
+    <path
+        android:fillColor="#047857"
+        android:strokeColor="#10B981"
+        android:strokeWidth="2"
+        android:pathData="M280,225 C310,285 350,290 350,290 C350,290 390,285 420,225 C400,310 300,310 280,225 Z" />
+
+    <!-- Satin Waistband with Crystal Brooch -->
+    <path
+        android:fillColor="#022C22"
+        android:pathData="M180,420 L520,420 L510,470 L190,470 Z" />
+    <path
+        android:fillColor="#FBBF24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M340,445 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0" />
+</vector>

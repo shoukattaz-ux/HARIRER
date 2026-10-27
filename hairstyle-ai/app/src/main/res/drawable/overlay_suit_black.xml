@@ -1,0 +1,60 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Black Dinner Tuxedo Torso -->
+    <path
+        android:fillColor="#111827"
+        android:strokeColor="#030712"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L35,700 L665,700 L650,320 L580,235 L460,190 L395,260 L350,290 L305,260 Z" />
+
+    <!-- White Pleated Tuxedo Shirt -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="2"
+        android:pathData="M305,245 L350,390 L395,245 Z" />
+    <path
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1.5"
+        android:pathData="M340,270 L340,370 M360,270 L360,370" />
+
+    <!-- Black Silk Bow Tie -->
+    <path
+        android:fillColor="#030712"
+        android:pathData="M320,252 C350,262 330,274 330,274 L370,274 C350,262 380,252 380,252 Z" />
+    <path
+        android:fillColor="#1F2937"
+        android:pathData="M345,263 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+
+    <!-- Satin Shawl Lapels -->
+    <path
+        android:fillColor="#1F2937"
+        android:strokeColor="#374151"
+        android:strokeWidth="2"
+        android:pathData="M260,200 C300,280 340,370 350,410 C340,410 300,350 230,290 Z" />
+    <path
+        android:fillColor="#1F2937"
+        android:strokeColor="#374151"
+        android:strokeWidth="2"
+        android:pathData="M440,200 C400,280 360,370 350,410 C360,410 400,350 470,290 Z" />
+
+    <!-- Pocket Square -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M210,345 L250,340 L235,322 L220,326 Z" />
+
+    <!-- Center Line & Satin Button -->
+    <path
+        android:strokeColor="#030712"
+        android:strokeWidth="3"
+        android:pathData="M350,410 L350,700" />
+    <path
+        android:fillColor="#27272A"
+        android:strokeColor="#52525B"
+        android:strokeWidth="2"
+        android:pathData="M342,465 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+</vector>

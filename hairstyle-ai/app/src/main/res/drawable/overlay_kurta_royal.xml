@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Royal Maroon Kurta Silhouette -->
+    <path
+        android:fillColor="#4C0519"
+        android:strokeColor="#26020C"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L30,700 L670,700 L650,320 L580,235 L460,190 L395,240 L350,250 L305,240 Z" />
+
+    <!-- Mandarin Ban Collar with Gold Zari Border -->
+    <path
+        android:fillColor="#881337"
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="2.5"
+        android:pathData="M280,200 C300,230 350,235 370,230 L380,200 C360,205 320,205 280,200 Z" />
+
+    <!-- Golden Embroidered Front Patti -->
+    <path
+        android:fillColor="#881337"
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="2.5"
+        android:pathData="M338,235 h24 v280 h-24 Z" />
+
+    <!-- Royal Golden Buttons -->
+    <path
+        android:fillColor="#FBBF24"
+        android:strokeColor="#FFFBEB"
+        android:strokeWidth="1.5"
+        android:pathData="M345,275 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,325 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,375 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,425 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,475 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

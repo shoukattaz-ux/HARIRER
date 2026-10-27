@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Washed Denim Body -->
+    <path
+        android:fillColor="#1D4ED8"
+        android:strokeColor="#172554"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L35,700 L665,700 L650,320 L580,235 L460,190 L395,255 L350,275 L305,255 Z" />
+
+    <!-- White Inner Crewneck -->
+    <path
+        android:fillColor="#F8FAFC"
+        android:pathData="M310,250 L350,300 L390,250 Z" />
+
+    <!-- Classic Denim Collar -->
+    <path
+        android:fillColor="#2563EB"
+        android:strokeColor="#1E40AF"
+        android:strokeWidth="2.5"
+        android:pathData="M260,195 L305,255 L350,230 L395,255 L440,195 L350,185 Z" />
+
+    <!-- Center Placket & Copper Buttons -->
+    <path
+        android:strokeColor="#D97706"
+        android:strokeWidth="2.5"
+        android:pathData="M350,275 L350,700" />
+    <path
+        android:fillColor="#F59E0B"
+        android:strokeColor="#92400E"
+        android:strokeWidth="1.5"
+        android:pathData="M343,320 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M343,400 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M343,480 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M343,560 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M343,640 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+
+    <!-- Twin Flap Chest Pockets -->
+    <path
+        android:fillColor="#1E40AF"
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="1.5"
+        android:pathData="M180,340 h90 v70 h-90 Z M430,340 h90 v70 h-90 Z" />
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M220,355 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M470,355 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

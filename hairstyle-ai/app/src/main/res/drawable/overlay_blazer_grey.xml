@@ -1,0 +1,53 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Charcoal Blazer Base -->
+    <path
+        android:fillColor="#374151"
+        android:strokeColor="#1F2937"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L35,700 L665,700 L650,320 L580,235 L460,190 L395,260 L350,290 L305,260 Z" />
+
+    <!-- Light Blue Collared Shirt -->
+    <path
+        android:fillColor="#E0F2FE"
+        android:strokeColor="#BAE6FD"
+        android:strokeWidth="2"
+        android:pathData="M305,245 L350,380 L395,245 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="1"
+        android:pathData="M346,285 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M346,325 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M346,365 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+
+    <!-- Notched Lapels -->
+    <path
+        android:fillColor="#4B5563"
+        android:strokeColor="#1F2937"
+        android:strokeWidth="2"
+        android:pathData="M275,200 L350,400 L325,410 L215,280 L255,270 Z" />
+    <path
+        android:fillColor="#4B5563"
+        android:strokeColor="#1F2937"
+        android:strokeWidth="2"
+        android:pathData="M425,200 L350,400 L375,410 L485,280 L445,270 Z" />
+
+    <!-- Horn Buttons -->
+    <path
+        android:strokeColor="#111827"
+        android:strokeWidth="3"
+        android:pathData="M350,400 L350,700" />
+    <path
+        android:fillColor="#78350F"
+        android:strokeColor="#B45309"
+        android:strokeWidth="2"
+        android:pathData="M343,455 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path
+        android:fillColor="#78350F"
+        android:strokeColor="#B45309"
+        android:strokeWidth="2"
+        android:pathData="M343,545 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+</vector>

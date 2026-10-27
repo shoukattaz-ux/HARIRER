@@ -1,0 +1,49 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Baby Mini Tuxedo Torso -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="3"
+        android:pathData="M260,220 L160,260 L90,340 L80,680 L620,680 L610,340 L540,260 L440,220 L390,280 L350,305 L310,280 Z" />
+
+    <!-- White Pleated Inner Shirt -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2"
+        android:pathData="M310,265 L350,380 L390,265 Z" />
+
+    <!-- Red Silk Mini Bow Tie -->
+    <path
+        android:fillColor="#DC2626"
+        android:strokeColor="#B91C1C"
+        android:strokeWidth="1.5"
+        android:pathData="M325,270 C350,280 335,292 335,292 L365,292 C350,280 375,270 375,270 Z" />
+    <path
+        android:fillColor="#EF4444"
+        android:pathData="M346,280 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+
+    <!-- Little Satin Lapels -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="2"
+        android:pathData="M290,230 L350,390 L330,400 L240,300 L270,290 Z" />
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="2"
+        android:pathData="M410,230 L350,390 L370,400 L460,300 L430,290 Z" />
+
+    <!-- Cute Gold Accent Buttons -->
+    <path
+        android:fillColor="#F59E0B"
+        android:strokeColor="#D97706"
+        android:strokeWidth="1.5"
+        android:pathData="M344,440 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 M344,510 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+</vector>

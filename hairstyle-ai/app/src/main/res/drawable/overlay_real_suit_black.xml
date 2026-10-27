@@ -1,0 +1,202 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="1400dp"
+    android:viewportWidth="800"
+    android:viewportHeight="1400">
+
+    <!-- ================= 1. SHOWROOM DISPLAY STAND & SHADOW ================= -->
+    <path
+        android:fillColor="#000000"
+        android:alpha="0.45"
+        android:pathData="M160,1350 C160,1330 640,1330 640,1350 C640,1370 160,1370 160,1350 Z" />
+
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#475569"
+        android:strokeWidth="2"
+        android:pathData="M220,1345 C220,1332 580,1332 580,1345 C580,1358 220,1358 220,1345 Z" />
+
+    <!-- ================= 2. PATENT LEATHER FORMAL TUXEDO SHOES ================= -->
+    <!-- Left Shoe -->
+    <path
+        android:fillColor="#000000"
+        android:strokeColor="#18181B"
+        android:strokeWidth="1.5"
+        android:pathData="M235,1335 C235,1320 385,1320 385,1335 L380,1344 C340,1346 270,1346 240,1344 Z" />
+    <path
+        android:fillColor="#09090B"
+        android:strokeColor="#27272A"
+        android:strokeWidth="1.5"
+        android:pathData="M245,1235 L365,1235 L382,1325 C370,1335 250,1335 238,1325 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M270,1300 C290,1295 330,1295 350,1300 L375,1326 C360,1332 260,1332 245,1326 Z" />
+
+    <!-- Right Shoe -->
+    <path
+        android:fillColor="#000000"
+        android:strokeColor="#18181B"
+        android:strokeWidth="1.5"
+        android:pathData="M415,1335 C415,1320 565,1320 565,1335 L560,1344 C530,1346 450,1346 420,1344 Z" />
+    <path
+        android:fillColor="#09090B"
+        android:strokeColor="#27272A"
+        android:strokeWidth="1.5"
+        android:pathData="M435,1235 L555,1235 L562,1325 C550,1335 430,1335 418,1325 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M450,1300 C470,1295 510,1295 530,1300 L555,1326 C540,1332 440,1332 425,1326 Z" />
+
+    <!-- ================= 3. BLACK TUXEDO FORMAL TROUSERS ================= -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#020617"
+        android:strokeWidth="2"
+        android:pathData="M250,650 L550,650 L565,920 L555,1240 L435,1240 L410,910 L385,910 L365,1240 L245,1240 L235,920 Z" />
+
+    <!-- Satin Side Stripes -->
+    <path
+        android:strokeColor="#334155"
+        android:strokeWidth="7"
+        android:pathData="M255,655 L243,920 L252,1238 M545,655 L557,920 L548,1238" />
+
+    <!-- Creases -->
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="3.5"
+        android:pathData="M305,680 L308,920 L305,1240 M495,680 L492,920 L495,1240" />
+
+    <!-- ================= 4. SATIN PLEATED CUMMERBUND ================= -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="2"
+        android:pathData="M245,610 L555,610 L550,655 L250,655 Z" />
+    <path
+        android:strokeColor="#334155"
+        android:strokeWidth="1.5"
+        android:pathData="M248,622 L552,622 M249,635 L551,635 M250,648 L550,648" />
+
+    <!-- ================= 5. REALISTIC SCULPTED MANNEQUIN HANDS & ARMS ================= -->
+    <!-- Left Forearm (Black Blazer Sleeve) -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#020617"
+        android:strokeWidth="2"
+        android:pathData="M160,265 L115,440 L135,590 L175,670 L215,660 L185,550 L170,440 L220,310 Z" />
+    <!-- White French Shirt Cuff extending slightly -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1.5"
+        android:pathData="M172,668 L215,658 L217,678 L174,688 Z" />
+    <!-- Left Hand -->
+    <path
+        android:fillColor="#D4B69B"
+        android:strokeColor="#9E7B5C"
+        android:strokeWidth="1.5"
+        android:pathData="M176,690 L216,680 C222,695 220,730 215,750 L205,765 L195,765 L190,740 L185,765 L178,760 C174,740 172,705 176,690 Z" />
+
+    <!-- Right Forearm -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#020617"
+        android:strokeWidth="2"
+        android:pathData="M640,265 L685,440 L665,590 L625,670 L585,660 L615,550 L630,440 L580,310 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1.5"
+        android:pathData="M628,668 L585,658 L583,678 L626,688 Z" />
+    <!-- Right Hand -->
+    <path
+        android:fillColor="#D4B69B"
+        android:strokeColor="#9E7B5C"
+        android:strokeWidth="1.5"
+        android:pathData="M624,690 L584,680 C578,695 580,730 585,750 L595,765 L605,765 L610,740 L615,765 L622,760 C626,740 628,705 624,690 Z" />
+
+    <!-- ================= 6. WHITE PLEATED TUXEDO SHIRT ================= -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2"
+        android:pathData="M270,220 L160,265 L220,310 L250,615 L550,615 L580,310 L640,265 L530,220 L450,270 L400,285 L350,270 Z" />
+
+    <!-- Black Stud Buttons -->
+    <path android:fillColor="#000000" android:strokeColor="#94A3B8" android:strokeWidth="1.5"
+        android:pathData="M394,360 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path android:fillColor="#000000" android:strokeColor="#94A3B8" android:strokeWidth="1.5"
+        android:pathData="M394,420 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path android:fillColor="#000000" android:strokeColor="#94A3B8" android:strokeWidth="1.5"
+        android:pathData="M394,480 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+
+    <!-- ================= 7. BLACK TUXEDO JACKET & SATIN LAPELS ================= -->
+    <!-- Left Jacket Half -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#020617"
+        android:strokeWidth="2"
+        android:pathData="M260,230 L160,265 L220,310 L250,615 L380,615 L340,410 L270,280 Z" />
+    <!-- Right Jacket Half -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#020617"
+        android:strokeWidth="2"
+        android:pathData="M540,230 L640,265 L580,310 L550,615 L420,615 L460,410 L530,280 Z" />
+
+    <!-- Satin Shawl Lapels -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#334155"
+        android:strokeWidth="1.5"
+        android:pathData="M260,230 L340,410 L400,510 L380,510 L310,380 L250,270 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#334155"
+        android:strokeWidth="1.5"
+        android:pathData="M540,230 L460,410 L400,510 L420,510 L490,380 L550,270 Z" />
+
+    <!-- Pocket Square -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#334155"
+        android:strokeWidth="1.5"
+        android:pathData="M230,370 h45 v8 h-45 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M240,370 L252,354 L265,370 Z" />
+
+    <!-- ================= 8. LUXURY BLACK SATIN BOW TIE ================= -->
+    <path
+        android:fillColor="#000000"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1.5"
+        android:pathData="M340,260 L395,278 L395,282 L340,300 L350,280 Z" />
+    <path
+        android:fillColor="#000000"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1.5"
+        android:pathData="M460,260 L405,278 L405,282 L460,300 L450,280 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#334155"
+        android:strokeWidth="1"
+        android:pathData="M393,270 h14 v20 h-14 Z" />
+
+    <!-- ================= 9. WINGTIP SHIRT COLLAR & NECK MOUNT ================= -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2"
+        android:pathData="M330,225 L370,275 L345,270 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2"
+        android:pathData="M470,225 L430,275 L455,270 Z" />
+
+    <path
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2.5"
+        android:pathData="M320,220 C360,255 440,255 480,220" />
+</vector>

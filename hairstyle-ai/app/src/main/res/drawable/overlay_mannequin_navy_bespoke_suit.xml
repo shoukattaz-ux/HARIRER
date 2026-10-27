@@ -1,0 +1,244 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="1400dp"
+    android:viewportWidth="800"
+    android:viewportHeight="1400">
+
+    <!-- ================= 1. BESPOKE STUDIO SHOWROOM STAND & SHADOW ================= -->
+    <!-- Soft Floor Ambient Shadow -->
+    <path
+        android:fillColor="#000000"
+        android:alpha="0.45"
+        android:pathData="M160,1355 C160,1335 640,1335 640,1355 C640,1375 160,1375 160,1355 Z" />
+
+    <!-- Square Brushed Steel Base Plate (Matching User Image 3) -->
+    <path
+        android:fillColor="#475569"
+        android:strokeColor="#64748B"
+        android:strokeWidth="2"
+        android:pathData="M230,1340 L570,1340 L555,1362 L245,1362 Z" />
+    <path
+        android:fillColor="#64748B"
+        android:pathData="M250,1343 L550,1343 L540,1358 L260,1358 Z" />
+
+    <!-- ================= 2. ITALIAN BURNISHED BROWN LEATHER SHOES ================= -->
+    <!-- Left Brown Oxford Shoe -->
+    <path
+        android:fillColor="#451A03"
+        android:strokeColor="#271003"
+        android:strokeWidth="1.5"
+        android:pathData="M245,1335 C245,1315 375,1315 375,1335 L370,1345 C330,1348 270,1348 250,1345 Z" />
+    <path
+        android:fillColor="#78350F"
+        android:strokeColor="#451A03"
+        android:strokeWidth="1.5"
+        android:pathData="M255,1235 L360,1235 L372,1325 C360,1335 260,1335 248,1325 Z" />
+    <!-- Hand-Burnished Toe Cap & Highlights -->
+    <path
+        android:fillColor="#92400E"
+        android:pathData="M275,1300 C295,1294 330,1294 345,1300 L365,1326 C350,1332 270,1332 255,1326 Z" />
+    <path
+        android:fillColor="#B45309"
+        android:alpha="0.4"
+        android:pathData="M280,1310 C300,1306 325,1306 340,1310 L345,1318 C330,1321 295,1321 280,1318 Z" />
+
+    <!-- Right Brown Oxford Shoe -->
+    <path
+        android:fillColor="#451A03"
+        android:strokeColor="#271003"
+        android:strokeWidth="1.5"
+        android:pathData="M425,1335 C425,1315 555,1315 555,1335 L550,1345 C510,1348 450,1348 430,1345 Z" />
+    <path
+        android:fillColor="#78350F"
+        android:strokeColor="#451A03"
+        android:strokeWidth="1.5"
+        android:pathData="M440,1235 L545,1235 L552,1325 C540,1335 440,1335 428,1325 Z" />
+    <path
+        android:fillColor="#92400E"
+        android:pathData="M455,1300 C475,1294 510,1294 525,1300 L545,1326 C530,1332 450,1332 435,1326 Z" />
+    <path
+        android:fillColor="#B45309"
+        android:alpha="0.4"
+        android:pathData="M460,1310 C480,1306 505,1306 520,1310 L525,1318 C510,1321 475,1321 460,1318 Z" />
+
+    <!-- ================= 3. ROYAL NAVY BLUE SLIM FORMAL TROUSERS ================= -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="2"
+        android:pathData="M255,620 L545,620 L560,920 L550,1240 L440,1240 L415,910 L385,910 L360,1240 L250,1240 L240,920 Z" />
+
+    <!-- Inseam Shadow -->
+    <path
+        android:fillColor="#0F172A"
+        android:alpha="0.5"
+        android:pathData="M380,880 L420,880 L415,930 L385,930 Z" />
+    <path
+        android:strokeColor="#172554"
+        android:strokeWidth="2"
+        android:pathData="M400,620 L400,900" />
+
+    <!-- Left Leg Center Crease -->
+    <path
+        android:strokeColor="#3B82F6"
+        android:strokeWidth="1.5"
+        android:pathData="M305,640 L305,1235" />
+    <path
+        android:strokeColor="#0F172A"
+        android:strokeWidth="1.5"
+        android:pathData="M307,640 L307,1235" />
+
+    <!-- Right Leg Center Crease -->
+    <path
+        android:strokeColor="#3B82F6"
+        android:strokeWidth="1.5"
+        android:pathData="M495,640 L495,1235" />
+    <path
+        android:strokeColor="#0F172A"
+        android:strokeWidth="1.5"
+        android:pathData="M497,640 L497,1235" />
+
+    <!-- ================= 4. MANNEQUIN ARMS & SLEEVES ================= -->
+    <!-- Left Forearm (Royal Navy Sleeve) -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="2"
+        android:pathData="M165,260 L120,440 L140,590 L180,670 L220,660 L190,550 L175,440 L225,305 Z" />
+    <!-- Left Sleeve Cuff & 4 Buttons -->
+    <path
+        android:fillColor="#172554"
+        android:pathData="M178,665 L220,655 L223,680 L180,690 Z" />
+    <path android:fillColor="#0F172A" android:pathData="M188,672 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M196,670 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M204,668 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M212,666 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- Left Articulated Wooden Mannequin Hand (Matching User Image 3) -->
+    <path
+        android:fillColor="#D4B69B"
+        android:strokeColor="#9E7B5C"
+        android:strokeWidth="1.5"
+        android:pathData="M182,690 L222,680 C226,695 224,730 219,750 L209,765 L199,765 L194,740 L189,765 L184,760 C180,740 178,705 182,690 Z" />
+
+    <!-- Right Forearm (Royal Navy Sleeve) -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="2"
+        android:pathData="M635,260 L680,440 L660,590 L620,670 L580,660 L610,550 L625,440 L575,305 Z" />
+    <!-- Right Sleeve Cuff & Buttons -->
+    <path
+        android:fillColor="#172554"
+        android:pathData="M622,665 L580,655 L577,680 L620,690 Z" />
+    <path android:fillColor="#0F172A" android:pathData="M608,672 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M600,670 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M592,668 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#0F172A" android:pathData="M584,666 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+
+    <!-- Right Articulated Wooden Mannequin Hand -->
+    <path
+        android:fillColor="#D4B69B"
+        android:strokeColor="#9E7B5C"
+        android:strokeWidth="1.5"
+        android:pathData="M618,690 L578,680 C574,695 576,730 581,750 L591,765 L601,765 L606,740 L611,765 L616,760 C620,740 622,705 618,690 Z" />
+
+    <!-- ================= 5. ROYAL NAVY SINGLE-BREASTED JACKET ================= -->
+    <path
+        android:fillColor="#2563EB"
+        android:strokeColor="#1E3A8A"
+        android:strokeWidth="2.5"
+        android:pathData="M225,260 L575,260 L560,650 L240,650 Z" />
+
+    <!-- Tailored Waist Suppression & Fabric Highlights -->
+    <path
+        android:fillColor="#1D4ED8"
+        android:pathData="M245,260 L380,260 L360,650 L240,650 Z" />
+    <path
+        android:fillColor="#1E40AF"
+        android:pathData="M420,260 L555,260 L560,650 L440,650 Z" />
+
+    <!-- Slanted Flap Pockets -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="1"
+        android:pathData="M260,540 L345,545 L345,562 L260,557 Z" />
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="1"
+        android:pathData="M455,545 L540,540 L540,557 L455,562 Z" />
+
+    <!-- Chest Welt Pocket with Crisp White Pocket Square (User Image 3) -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="1"
+        android:pathData="M280,360 h65 v8 h-65 Z" />
+    <!-- Folded White TV-Fold Pocket Square -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1"
+        android:pathData="M284,352 h57 v8 h-57 Z" />
+
+    <!-- 2 Front Dark Horn Fastening Buttons -->
+    <path android:fillColor="#0F172A" android:strokeColor="#38BDF8" android:strokeWidth="1"
+        android:pathData="M394,490 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#0F172A" android:strokeColor="#38BDF8" android:strokeWidth="1"
+        android:pathData="M394,560 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+
+    <!-- ================= 6. NOTCHED LAPELS WITH ITALIAN PICK-STITCHING ================= -->
+    <!-- Left Notched Lapel -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="2.5"
+        android:pathData="M330,225 L400,485 L350,470 L280,365 L335,355 Z" />
+    <!-- Left Lapel Notch Cut -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M280,365 L335,355 L300,320 Z" />
+
+    <!-- Right Notched Lapel -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#172554"
+        android:strokeWidth="2.5"
+        android:pathData="M470,225 L400,485 L450,470 L520,365 L465,355 Z" />
+    <!-- Right Lapel Notch Cut -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M520,365 L465,355 L500,320 Z" />
+
+    <!-- ================= 7. OPEN COLLAR SHIRT & WOODEN TAILOR NECK MOUNT ================= -->
+    <!-- White Dress Shirt V-Neck (Open-Collar Sprezzatura) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="1.5"
+        android:pathData="M340,220 L460,220 L400,420 Z" />
+    <!-- Inner Shirt Shadow -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:pathData="M380,220 L420,220 L400,360 Z" />
+
+    <!-- Shirt Left Open Collar Wing -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M325,215 L385,320 L370,265 L330,220 Z" />
+    <!-- Shirt Right Open Collar Wing -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M475,215 L415,320 L430,265 L470,220 Z" />
+
+    <!-- Sculpted Mannequin Neck Mounting Opening -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M330,220 C355,248 445,248 470,220 C450,205 350,205 330,220 Z" />
+</vector>

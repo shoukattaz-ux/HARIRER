@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Pastel Blue Soft Baby Romper Body -->
+    <path
+        android:fillColor="#7DD3FC"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="3"
+        android:pathData="M260,220 L160,260 L90,340 L80,680 L620,680 L610,340 L540,260 L440,220 L390,270 L350,290 L310,270 Z" />
+
+    <!-- Peter Pan White Rounded Collar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#BAE6FD"
+        android:strokeWidth="2"
+        android:pathData="M275,225 C310,275 350,275 350,275 C350,275 390,275 425,225 C410,290 290,290 275,225 Z" />
+
+    <!-- Cute Pastel Buttons & Star Motif -->
+    <path
+        android:fillColor="#FBBF24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M344,350 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 M344,430 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 M344,510 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+
+    <!-- Teddy Bear Pocket -->
+    <path
+        android:fillColor="#F0F9FF"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2"
+        android:pathData="M200,420 h70 v60 h-70 Z" />
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M230,445 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

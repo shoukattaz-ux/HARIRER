@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Little Prince Golden Festive Kurta -->
+    <path
+        android:fillColor="#FBBF24"
+        android:strokeColor="#D97706"
+        android:strokeWidth="3"
+        android:pathData="M260,220 L160,260 L90,340 L70,680 L630,680 L610,340 L540,260 L440,220 L390,260 L350,275 L310,260 Z" />
+
+    <!-- Cute Mandarin Collar with Maroon Trim -->
+    <path
+        android:fillColor="#991B1B"
+        android:strokeColor="#7F1D1D"
+        android:strokeWidth="2"
+        android:pathData="M295,225 C310,250 350,255 365,250 L375,225 C360,230 330,230 295,225 Z" />
+
+    <!-- Embroidered Front Patti -->
+    <path
+        android:fillColor="#991B1B"
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="2"
+        android:pathData="M340,255 h20 v220 h-20 Z" />
+
+    <!-- Golden Little Buttons -->
+    <path
+        android:fillColor="#FEF08A"
+        android:strokeColor="#D97706"
+        android:strokeWidth="1.5"
+        android:pathData="M345,285 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,335 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,385 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M345,435 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

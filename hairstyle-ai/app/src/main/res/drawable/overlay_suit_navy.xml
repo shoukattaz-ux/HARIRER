@@ -1,0 +1,62 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Suit Torso & Shoulders -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="3"
+        android:pathData="M240,190 L120,235 L50,320 L35,700 L665,700 L650,320 L580,235 L460,190 L395,260 L350,290 L305,260 Z" />
+
+    <!-- White Inner Dress Shirt -->
+    <path
+        android:fillColor="#F8FAFC"
+        android:strokeColor="#CBD5E1"
+        android:strokeWidth="2"
+        android:pathData="M305,245 L350,380 L395,245 Z" />
+
+    <!-- Silk Maroon Tie -->
+    <path
+        android:fillColor="#991B1B"
+        android:pathData="M342,260 L358,260 L365,400 L350,440 L335,400 Z" />
+    <path
+        android:fillColor="#B91C1C"
+        android:pathData="M340,250 L360,250 L356,268 L344,268 Z" />
+
+    <!-- Left Lapel -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#334155"
+        android:strokeWidth="2"
+        android:pathData="M275,200 L350,400 L325,410 L215,280 L255,270 Z" />
+
+    <!-- Right Lapel -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#334155"
+        android:strokeWidth="2"
+        android:pathData="M425,200 L350,400 L375,410 L485,280 L445,270 Z" />
+
+    <!-- Pocket Square -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M210,345 L250,340 L240,318 L220,324 Z" />
+
+    <!-- Center Line & Buttons -->
+    <path
+        android:strokeColor="#020617"
+        android:strokeWidth="3"
+        android:pathData="M350,400 L350,700" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M344,455 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M344,545 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M344,635 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+</vector>

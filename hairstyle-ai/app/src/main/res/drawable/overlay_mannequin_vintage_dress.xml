@@ -1,0 +1,147 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="1400dp"
+    android:viewportWidth="800"
+    android:viewportHeight="1400">
+
+    <!-- ================= 1. ATELIER COUTURE DISPLAY STAND & SHADOW ================= -->
+    <!-- Soft Floor Drop Shadow -->
+    <path
+        android:fillColor="#000000"
+        android:alpha="0.45"
+        android:pathData="M200,1355 C200,1335 600,1335 600,1355 C600,1375 200,1375 200,1355 Z" />
+
+    <!-- Circular Chrome Pedestal Base Plate (Matching User Image 1) -->
+    <path
+        android:fillColor="#64748B"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M340,1350 C340,1338 460,1338 460,1350 C460,1362 340,1362 340,1350 Z" />
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M360,1348 C360,1342 440,1342 440,1348 C440,1354 360,1354 360,1348 Z" />
+
+    <!-- Central Chrome Support Pole -->
+    <path
+        android:fillColor="#94A3B8"
+        android:strokeColor="#64748B"
+        android:strokeWidth="1.5"
+        android:pathData="M394,1240 h12 v110 h-12 Z" />
+
+    <!-- ================= 2. DRAMATIC VOLUMINOUS VINTAGE SATIN BALLGOWN SKIRT ================= -->
+    <!-- Flowing Satin Train & Rear Draped Bustle (Matching User Image 1) -->
+    <path
+        android:fillColor="#0B132B"
+        android:strokeColor="#090E1A"
+        android:strokeWidth="2"
+        android:pathData="M260,540 C200,680 160,940 180,1260 C240,1280 340,1270 380,1250 C350,960 340,680 350,540 Z" />
+
+    <!-- Main Cascading Satin Gown Skirt -->
+    <path
+        android:fillColor="#1C2541"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2.5"
+        android:pathData="M340,540 C340,540 460,540 460,540 C520,700 620,950 630,1250 C580,1270 480,1280 380,1280 C260,1280 200,1260 180,1240 C230,950 310,700 340,540 Z" />
+
+    <!-- Deep Satin Folds & Lustrous Highlights (Silk/Taffeta Sheen) -->
+    <!-- Left Major Drape -->
+    <path
+        android:fillColor="#243356"
+        android:pathData="M350,540 C330,720 280,960 250,1250 C290,1260 360,1260 390,1240 C390,950 380,720 370,540 Z" />
+    <path
+        android:fillColor="#3A506B"
+        android:alpha="0.4"
+        android:pathData="M360,550 C345,720 310,950 280,1230 C305,1235 345,1235 365,1225 C370,950 370,720 365,550 Z" />
+
+    <!-- Center Flowing Drape -->
+    <path
+        android:fillColor="#1C2541"
+        android:pathData="M370,540 C390,750 420,980 430,1270 C460,1270 510,1265 540,1250 C510,980 470,750 440,540 Z" />
+    <path
+        android:fillColor="#3A506B"
+        android:alpha="0.45"
+        android:pathData="M410,560 C425,750 460,980 480,1255 C495,1255 520,1250 535,1240 C515,980 475,750 440,560 Z" />
+
+    <!-- Right Flared Hem Edge & Tailored Sweep -->
+    <path
+        android:fillColor="#111B30"
+        android:pathData="M440,540 C480,720 560,960 620,1245 C590,1260 550,1265 530,1260 C490,980 450,720 430,540 Z" />
+
+    <!-- Dramatic Satin Sweep Bottom Curve Hem -->
+    <path
+        android:strokeColor="#0B132B"
+        android:strokeWidth="3"
+        android:pathData="M180,1240 C280,1290 520,1290 630,1250" />
+
+    <!-- ================= 3. FITTED EMPIRE SWEETHEART BODICE ================= -->
+    <!-- Bodice Foundation -->
+    <path
+        android:fillColor="#151E38"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2"
+        android:pathData="M320,310 C320,310 480,310 480,310 C470,390 460,470 460,540 C420,545 380,545 340,540 C340,470 330,390 320,310 Z" />
+
+    <!-- Sweetheart Neckline Left Arch -->
+    <path
+        android:fillColor="#1C2541"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2"
+        android:pathData="M320,310 C345,280 395,290 400,340 C380,410 350,470 340,540 C330,460 320,380 320,310 Z" />
+
+    <!-- Sweetheart Neckline Right Arch -->
+    <path
+        android:fillColor="#1C2541"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2"
+        android:pathData="M480,310 C455,280 405,290 400,340 C420,410 450,470 460,540 C470,460 480,380 480,310 Z" />
+
+    <!-- Couture Intricate Ruching / Pleating Textures on Bodice (Matching User Image 1) -->
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M335,340 C360,335 390,345 400,360" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M340,370 C365,365 390,375 400,390" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M345,400 C370,395 390,405 400,420" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M348,430 C370,425 390,435 400,450" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M350,460 C370,455 390,465 400,480" />
+
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M465,340 C440,335 410,345 400,360" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M460,370 C435,365 410,375 400,390" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M455,400 C430,395 410,405 400,420" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M452,430 C430,425 410,435 400,450" />
+    <path android:strokeColor="#3A506B" android:strokeWidth="1.5" android:pathData="M450,460 C430,455 410,465 400,480" />
+
+    <!-- Center Waist Contour Seam -->
+    <path android:strokeColor="#0B132B" android:strokeWidth="2" android:pathData="M400,340 L400,540" />
+
+    <!-- ================= 4. ELEGANT HALTER NECK STRAP ================= -->
+    <!-- Left Halter Strap circling behind neck -->
+    <path
+        android:fillColor="#151E38"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2"
+        android:pathData="M345,300 C355,260 375,230 385,225 C392,230 380,265 370,305 Z" />
+
+    <!-- Right Halter Strap circling behind neck -->
+    <path
+        android:fillColor="#151E38"
+        android:strokeColor="#0B132B"
+        android:strokeWidth="2"
+        android:pathData="M455,300 C445,260 425,230 415,225 C408,230 420,265 430,305 Z" />
+
+    <!-- ================= 5. LINEN COUTURE DRESS FORM / MANNEQUIN TORSO ================= -->
+    <!-- Sculpted Feminine Decolletage & Neck (Matching User Image 1 Linen Form) -->
+    <path
+        android:fillColor="#F8FAFC"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="1.5"
+        android:pathData="M350,225 C350,225 450,225 450,225 C440,260 415,285 400,290 C385,285 360,260 350,225 Z" />
+
+    <!-- Soft Form Shading on Mannequin Neck -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:alpha="0.6"
+        android:pathData="M380,225 C380,250 400,280 400,290 C400,280 420,250 420,225 Z" />
+
+    <!-- Sculpted Mannequin Neck Mounting Opening -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M340,220 C365,248 435,248 460,220 C440,205 360,205 340,220 Z" />
+</vector>

@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Ivory Women Tailored Blazer -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="3"
+        android:pathData="M245,190 L130,235 L60,320 L50,700 L650,700 L640,320 L570,235 L455,190 L395,260 L350,290 L305,260 Z" />
+
+    <!-- Silk Black Inner Top -->
+    <path
+        android:fillColor="#09090B"
+        android:pathData="M305,250 L350,350 L395,250 Z" />
+
+    <!-- Tailored Peaked Lapels -->
+    <path
+        android:fillColor="#F8FAFC"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M275,200 L350,380 L330,390 L225,280 L260,265 Z" />
+    <path
+        android:fillColor="#F8FAFC"
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="2"
+        android:pathData="M425,200 L350,380 L370,390 L475,280 L440,265 Z" />
+
+    <!-- Gold Statement Accent Buttons -->
+    <path
+        android:fillColor="#F59E0B"
+        android:strokeColor="#B45309"
+        android:strokeWidth="2"
+        android:pathData="M342,430 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0 M342,510 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+</vector>

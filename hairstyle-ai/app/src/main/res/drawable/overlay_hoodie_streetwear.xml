@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="700dp"
+    android:height="700dp"
+    android:viewportWidth="700"
+    android:viewportHeight="700">
+
+    <!-- Oversized Streetwear Hoodie Body -->
+    <path
+        android:fillColor="#1E293B"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="3"
+        android:pathData="M230,190 L110,240 L35,330 L20,700 L680,700 L665,330 L590,240 L470,190 L400,255 L350,270 L300,255 Z" />
+
+    <!-- Overlapping Hood Collar -->
+    <path
+        android:fillColor="#334155"
+        android:strokeColor="#0F172A"
+        android:strokeWidth="2.5"
+        android:pathData="M260,195 C310,255 390,255 440,195 C410,270 290,270 260,195 Z" />
+
+    <!-- Dual Drawstrings -->
+    <path
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="3.5"
+        android:pathData="M320,260 C325,330 325,370 315,420 M380,260 C375,330 375,370 385,420" />
+
+    <!-- Kangaroo Front Pocket -->
+    <path
+        android:fillColor="#0F172A"
+        android:strokeColor="#334155"
+        android:strokeWidth="2"
+        android:pathData="M220,520 L480,520 L460,660 L240,660 Z" />
+</vector>
