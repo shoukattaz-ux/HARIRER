@@ -58,6 +58,17 @@ object FaceShapeAnalyzer {
         bitmap: Bitmap,
         onResult: (FaceShapeAnalysisResult?) -> Unit
     ) {
+        analyzeFaceDetailed(bitmap) { result, _ -> onResult(result) }
+    }
+
+    /**
+     * Same as [analyzeFaceShape] but also returns the primary ML Kit [Face]
+     * (contours + landmarks), used by the animated AI Face Scan and skin tone analysis.
+     */
+    fun analyzeFaceDetailed(
+        bitmap: Bitmap,
+        onResult: (FaceShapeAnalysisResult?, Face?) -> Unit
+    ) {
         val options = FaceDetectorOptions.Builder()
             .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
             .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
@@ -75,16 +86,16 @@ object FaceShapeAnalyzer {
                     // Pick the primary (largest) face
                     val primaryFace = faces.maxByOrNull { it.boundingBox.width() * it.boundingBox.height() }!!
                     val analysis = computeFaceShape(primaryFace, bitmap.width.toFloat(), bitmap.height.toFloat())
-                    onResult(analysis)
+                    onResult(analysis, primaryFace)
                 } else {
                     Log.d(TAG, "No face detected in photo.")
-                    onResult(null)
+                    onResult(null, null)
                 }
                 detector.close()
             }
             .addOnFailureListener { error ->
                 Log.e(TAG, "ML Kit Face detection failed", error)
-                onResult(null)
+                onResult(null, null)
                 detector.close()
             }
     }

@@ -16,6 +16,7 @@ sealed class AppScreen {
     data class CompareStyles(val styleId1: String? = null, val styleId2: String? = null) : AppScreen() // Screen 9: Compare Styles
     object Favorites : AppScreen() // Screen 10: Saved & Favorites
     object FaceShape : AppScreen() // Screens 11 & 12: Face Shape & AI Recommendation
+    object FaceScan : AppScreen() // AI Face Scan: animated face shape detection + Personalized Style Advice report
     data class BarberGuide(val hairstyleId: String? = null) : AppScreen() // Screen 13: Barber Guide
     object SearchExplore : AppScreen() // Screen 14: Search & Filters
     object Profile : AppScreen() // Screen 15: Profile

@@ -40,6 +40,7 @@ import com.example.ui.screens.home.HomeScreen
 import com.example.ui.screens.outfit.ClothesHomeScreen
 import com.example.ui.screens.outfit.ClothesTryOnScreen
 import com.example.ui.screens.profile.ProfileScreen
+import com.example.ui.screens.scan.AiFaceScanScreen
 import com.example.ui.screens.splash.SplashScreen
 import com.example.ui.screens.tryon.CompareStylesScreen
 import com.example.ui.screens.tryon.FaceShapeScreen
@@ -262,7 +263,7 @@ fun HairStyleApp(
                             onNavigateToMen = { navigateTo(AppScreen.MenGallery) },
                             onNavigateToWomen = { navigateTo(AppScreen.WomenGallery) },
                             onNavigateToLiveAr = { navigateTo(AppScreen.TryHairstyle()) },
-                            onNavigateToFaceShape = { navigateTo(AppScreen.FaceShape) },
+                            onNavigateToFaceShape = { navigateTo(AppScreen.FaceScan) },
                             onNavigateToCompare = { navigateTo(AppScreen.CompareStyles()) },
                             onNavigateToBarberGuide = { navigateTo(AppScreen.BarberGuide()) },
                             currentLanguage = selectedLanguage,
@@ -315,6 +316,22 @@ fun HairStyleApp(
                             onBack = { popBack() },
                             onFaceShapeDetected = { viewModel.updateUserFaceShape(it) },
                             initialFaceShape = userProfile.faceShape
+                        )
+                    }
+
+                    is AppScreen.FaceScan -> {
+                        AiFaceScanScreen(
+                            initialPhoto = userPhoto,
+                            initialGender = homeGender,
+                            onPhotoSelected = { viewModel.setUserPhoto(it) },
+                            onFaceShapeDetected = { viewModel.updateUserFaceShape(it) },
+                            onSelectHairstyle = { id -> navigateTo(AppScreen.Detail(id)) },
+                            onTryLive = { item ->
+                                viewModel.setActiveTryOnItem(item)
+                                navigateTo(AppScreen.TryHairstyle(item.id))
+                            },
+                            onOpenFaceShapeGuide = { navigateTo(AppScreen.FaceShape) },
+                            onBack = { popBack() }
                         )
                     }
 

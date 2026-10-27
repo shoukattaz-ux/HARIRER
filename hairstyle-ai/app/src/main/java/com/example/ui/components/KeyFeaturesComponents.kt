@@ -162,10 +162,10 @@ val AllKeyFeatures: List<KeyFeatureItem> = listOf(
     ),
     KeyFeatureItem(
         id = "face_shape_analysis",
-        titleEn = "Face Shape Advice",
-        titleUrdu = "Face Shape Advice",
-        descriptionEn = "AI suggestions for Oval, Square, Round, Diamond faces.",
-        descriptionUrdu = "AI suggestions for Oval, Square, Round, Diamond faces.",
+        titleEn = "AI Face Scan",
+        titleUrdu = "AI Face Scan",
+        descriptionEn = "Scan your face shape & skin tone for personalized cuts and colors.",
+        descriptionUrdu = "Scan your face shape & skin tone for personalized cuts and colors.",
         badgeText = "Smart AI",
         icon = Icons.Default.AutoAwesome,
         accentColor = GoldStar,
@@ -876,8 +876,8 @@ fun KeyFeaturesViewAllDialog(
             ),
             KeyFeatureGridItem(
                 id = "face_shape_analysis",
-                titleEn = "Face Shape with\nAI Recommend",
-                titleUrdu = "Face Shape with\nAI Recommend",
+                titleEn = "AI Face Scan\n& Style Advice",
+                titleUrdu = "AI Face Scan\n& Style Advice",
                 icon = Icons.Default.Face,
                 tileColor = Color(0xFF3B1F75)
             ),
