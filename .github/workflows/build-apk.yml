@@ -21,6 +21,8 @@ jobs:
     env:
       HAS_GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 != '' }}
       HAS_RELEASE_KEYSTORE: ${{ secrets.KEYSTORE_BASE64 != '' }}
+      HAS_STABLE_DEBUG_KEY: ${{ secrets.DEBUG_KEYSTORE_BASE64 != '' }}
+      HAS_R2: ${{ secrets.R2_ACCESS_KEY_ID != '' && secrets.R2_SECRET_ACCESS_KEY != '' && secrets.R2_ENDPOINT != '' && secrets.R2_PUBLIC_BASE_URL != '' }}
     defaults:
       run:
         working-directory: hairstyle-ai
@@ -45,6 +47,12 @@ jobs:
 
       # Optional configuration from repository secrets (Settings → Secrets and variables → Actions).
       # Nothing secret is stored in the repository.
+      # Every build gets a higher versionCode so installed apps see it as an update
+      - name: Set version
+        run: |
+          echo "VERSION_CODE=$((100 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+          echo "VERSION_NAME=1.2.$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+
       - name: Write .env from secrets
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -95,6 +103,23 @@ jobs:
 
       - name: Run unit tests
         run: gradle testDebugUnitTest
+
+      # Publish to Cloudflare R2 for sideloaded installs, only when tests pass and builds are signed with
+      # a stable key (otherwise Android would refuse the update). Credentials come from repository secrets.
+      - name: Publish update to Cloudflare R2
+        if: env.HAS_R2 == 'true' && env.HAS_STABLE_DEBUG_KEY == 'true' && github.event_name != 'pull_request'
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET || 'hairstyleapp' }}
+          RELEASE_NOTES: ${{ github.event.head_commit.message || 'Improvements and fixes' }}
+        run: |
+          pip install --quiet boto3
+          NOTES=$(printf '%s' "$RELEASE_NOTES" | head -n 1)
+          python scripts/publish_update.py app/build/outputs/apk/debug/app-debug.apk \
+            --version-code "$VERSION_CODE" --version-name "$VERSION_NAME" --notes "$NOTES"
 
       - name: Upload test reports
         if: failure()

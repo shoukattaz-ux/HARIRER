@@ -21,8 +21,9 @@ android {
     applicationId = "com.aistudio.hairstyleai.vqzpmk"
     minSdk = 24
     targetSdk = 36
-    versionCode = 3
-    versionName = "1.2"
+    // CI sets VERSION_CODE / VERSION_NAME so every build is newer than the last (needed by the updater)
+    versionCode = providers.environmentVariable("VERSION_CODE").orNull?.toIntOrNull() ?: 3
+    versionName = providers.environmentVariable("VERSION_NAME").orNull ?: "1.2"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
