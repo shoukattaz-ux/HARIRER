@@ -75,7 +75,16 @@ jobs:
           fi
 
       - name: Build debug APK
-        run: gradle assembleDebug --stacktrace
+        run: |
+          set -o pipefail
+          gradle assembleDebug --console=plain 2>&1 | tee build.log
+
+      # Compiler errors are buried above long stack traces; repeat them at the end of the log
+      - name: Show build errors
+        if: failure()
+        run: |
+          echo "==== Kotlin/Java errors ===="
+          grep -E '^e: |error:|What went wrong' -A2 build.log | head -150 || true
 
       - name: Run unit tests
         run: gradle testDebugUnitTest
