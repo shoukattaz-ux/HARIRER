@@ -17,20 +17,32 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.billing.BillingManager
 import com.example.ui.HairStyleApp
+import com.example.update.AppUpdateController
+import com.example.update.AppUpdatePrompt
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.theme.ObsidianBackground
 import com.example.ui.viewmodel.HairstyleViewModel
 
 class MainActivity : ComponentActivity() {
+    private lateinit var updateController: AppUpdateController
+
     override fun onResume() {
         super.onResume()
         // Subscriptions can be canceled, renewed or refunded while the app is in the background
         BillingManager.refreshPurchases()
+        updateController.onResume()
+    }
+
+    override fun onDestroy() {
+        updateController.release()
+        super.onDestroy()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        updateController = AppUpdateController(this)
+        if (savedInstanceState == null) updateController.checkForUpdates()
         setContent {
             val viewModel: HairstyleViewModel = viewModel()
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()
@@ -51,6 +63,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             HairStyleApp(viewModel = viewModel)
                         }
+                        AppUpdatePrompt(updateController)
                     }
                 }
             }

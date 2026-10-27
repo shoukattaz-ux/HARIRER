@@ -76,3 +76,38 @@ Premium raises the daily AI preview limit from 3 to 30 (`AiTryOnConfig`).
 
 Users can manage or cancel Premium from the Premium card (opens Google Play → Subscriptions), and
 "Restore Purchase" in the upgrade dialog re-checks Google Play after a reinstall.
+
+## App updates
+
+The app checks for updates on launch.
+
+- **Installed from Google Play:** uses Google Play **In-App Updates**, the only update method Play
+  allows. Normal updates download in the background and show a "Restart" banner; releases with
+  in-app update priority ≥ 4 (set when you roll out the release) or ignored for 14+ days block the app
+  until updated. Nothing to host: just upload the new version to Play.
+- **Installed from an APK (sideloaded):** reads a public `update.json` and offers the new APK as a
+  download. Releases below `minSupportedVersionCode` must be installed before the app can be used.
+  Android only accepts the APK as an update if it is signed with the same key.
+
+### Publishing a sideloaded update to Cloudflare R2
+
+1. In Cloudflare → R2 → your bucket → **Settings**, connect a **custom domain** (recommended) or
+   enable the **Public Development URL** (`r2.dev`, rate-limited). This gives a public, read-only URL.
+2. Put `UPDATE_MANIFEST_URL=https://<public-url>/update.json` in `.env` and build the release APK
+   with a higher `versionCode` in `app/build.gradle.kts`.
+3. Create an R2 API token with **Object Read & Write** limited to this bucket. Keep its keys in your
+   environment only — never in the app, `.env`, or git — and roll them immediately if they leak.
+4. Publish:
+
+   ```bash
+   # macOS/Linux (PowerShell: $env:R2_ACCESS_KEY_ID = "...")
+   export R2_ACCESS_KEY_ID=...  R2_SECRET_ACCESS_KEY=...
+   export R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+   export R2_PUBLIC_BASE_URL=https://<public-url>
+   pip install boto3
+   python scripts/publish_update.py app/build/outputs/apk/release/app-release.apk \
+       --version-code 4 --version-name 1.3 --notes "New AI looks"   # add --dry-run to preview
+   ```
+
+   The APK is uploaded first and `update.json` last, so users never see an update that isn't there yet.
+   Use `--min-supported <versionCode>` to force old versions to update.
