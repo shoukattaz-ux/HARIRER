@@ -53,7 +53,10 @@ android {
     }
     debug {
       buildConfigField("boolean", "ALLOW_CLIENT_GEMINI_KEY", "true")
-      signingConfig = signingConfigs.getByName("debugConfig")
+      // debug.keystore is git-ignored: use it when present, otherwise Android's default debug key
+      if (file("${rootDir}/debug.keystore").exists()) {
+        signingConfig = signingConfigs.getByName("debugConfig")
+      }
     }
   }
   compileOptions {
