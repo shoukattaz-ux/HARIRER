@@ -9,9 +9,11 @@ import android.net.Uri
 import android.util.Base64
 import android.util.Log
 import com.example.BuildConfig
+import com.example.data.api.AiBackendConfig
 import com.example.data.api.AiHairstyleService
 import com.example.data.api.AiImageEditService
 import com.example.data.api.AiTryOnConfig
+import com.example.data.api.FirebaseAiImageService
 import com.example.data.api.GeminiApiService
 import com.example.data.api.GeminiContent
 import com.example.data.api.GeminiGenerateRequest
