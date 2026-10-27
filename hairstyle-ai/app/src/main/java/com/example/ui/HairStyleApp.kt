@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.model.Gender
 import com.example.data.model.HairstyleItem
+import com.example.data.model.UserPhotoSource
 import com.example.data.repository.HairstyleRepository
 import com.example.ui.components.AppBottomNavBar
 import com.example.ui.components.PaidSubscriptionDialog
@@ -554,6 +555,36 @@ fun HairStyleApp(
                             },
                             onShowToBarber = { id ->
                                 navigateTo(AppScreen.BarberGuide(id))
+                            },
+                            onMakeRealistic = { frame, asset ->
+                                // Use the catalog style behind the chosen overlay for a detailed AI prompt
+                                val style = item?.takeIf { it.overlayAssetId == asset.id }
+                                    ?: HairstyleRepository.getAllHairstyles().firstOrNull { it.overlayAssetId == asset.id }
+                                    ?: HairstyleItem(
+                                        id = asset.id,
+                                        name = asset.name,
+                                        category = asset.category,
+                                        gender = asset.gender,
+                                        description = "${asset.name} hairstyle",
+                                        stylingTips = "",
+                                        faceShapes = emptyList(),
+                                        hairLength = "Medium",
+                                        maintenance = "Medium"
+                                    )
+                                viewModel.setUserPhoto(UserPhotoSource.Captured(frame))
+                                viewModel.setActiveTryOnItem(style)
+                                navigateTo(AppScreen.Processing(style.id))
+                                viewModel.startRealAiTryOn(
+                                    context = context,
+                                    onSuccess = {
+                                        if (navStack.lastOrNull() is AppScreen.Processing) popBack()
+                                        navigateTo(AppScreen.TryOnResult(style.id, isCustomPhoto = true))
+                                    },
+                                    onError = { message ->
+                                        if (navStack.lastOrNull() is AppScreen.Processing) popBack()
+                                        viewModel.showFeedback(message)
+                                    }
+                                )
                             }
                         )
                     }

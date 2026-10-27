@@ -73,6 +73,8 @@ fun LiveArCameraView(
     showDebugOverlay: Boolean = true,
     onTransformChanged: (ArHeadTransform?) -> Unit,
     onRegisterCapture: ((() -> Bitmap?) -> Unit)? = null,
+    /** Registers a capture of the plain camera frame without the hair overlay (input for AI try-on). */
+    onRegisterRawCapture: ((() -> Bitmap?) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -251,6 +253,12 @@ fun LiveArCameraView(
 
     LaunchedEffect(onRegisterCapture) {
         onRegisterCapture?.invoke { captureCurrentView() }
+    }
+
+    LaunchedEffect(onRegisterRawCapture) {
+        onRegisterRawCapture?.invoke {
+            previewViewRef?.bitmap?.let { it.copy(Bitmap.Config.ARGB_8888, false) }
+        }
     }
 
     Box(

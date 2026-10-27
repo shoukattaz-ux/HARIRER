@@ -33,7 +33,9 @@ object HairstyleOverlayEngine {
 
     private const val TAG = "HairstyleOverlayEngine"
 
-    // Hairstyle Asset Registry with WebP assets and Drawables
+    // Hairstyle Asset Registry with WebP assets and Drawables.
+    // hairlineAnchorY / hairWidthRatio are measured from each image's pixels with
+    // scripts/calibrate_overlays.py; re-run it whenever an overlay image changes.
     private val overlayAssets = listOf(
         // MEN'S HAIRSTYLES
         HairstyleOverlayAsset(
@@ -44,8 +46,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_modern_quiff,
             assetPath = "hairstyles/men/modern-textured-quiff.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.868f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.727f,
+            hairWidthRatio = 0.827f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -58,8 +60,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_natural_quiff,
             assetPath = "hairstyles/men/natural-quiff.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.825f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.727f,
+            hairWidthRatio = 0.782f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -72,8 +74,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_buzz,
             assetPath = "hairstyles/men/buzz-cut.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.435f,
-            hairWidthRatio = 0.752f,
+            hairlineAnchorY = 0.333f,
+            hairWidthRatio = 0.747f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -86,8 +88,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_crop,
             assetPath = "hairstyles/men/french-crop.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.848f,
+            hairlineAnchorY = 0.457f,
+            hairWidthRatio = 0.805f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -100,8 +102,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_pompadour,
             assetPath = "hairstyles/men/pompadour.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.695f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.652f,
+            hairWidthRatio = 0.853f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -114,8 +116,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_fade,
             assetPath = "hairstyles/men/low-mid-fade.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.675f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.452f,
+            hairWidthRatio = 0.842f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -128,8 +130,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_curly,
             assetPath = "hairstyles/men/curly-fade.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.940f,
-            hairWidthRatio = 0.857f,
+            hairlineAnchorY = 0.672f,
+            hairWidthRatio = 0.855f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -142,8 +144,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_quiff,
             assetPath = "hairstyles/men/quiff.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.845f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.618f,
+            hairWidthRatio = 0.828f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -158,8 +160,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_bob,
             assetPath = "hairstyles/women/bob.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.730f,
-            hairWidthRatio = 0.593f,
+            hairlineAnchorY = 0.512f,
+            hairWidthRatio = 0.587f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -172,8 +174,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_pixie,
             assetPath = "hairstyles/women/pixie.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.465f,
-            hairWidthRatio = 0.553f,
+            hairlineAnchorY = 0.458f,
+            hairWidthRatio = 0.532f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -186,8 +188,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_layers,
             assetPath = "hairstyles/women/long-layered.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.668f,
+            hairlineAnchorY = 0.520f,
+            hairWidthRatio = 0.660f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -200,8 +202,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_wavy,
             assetPath = "hairstyles/women/beach-waves.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.890f,
-            hairWidthRatio = 0.697f,
+            hairlineAnchorY = 0.522f,
+            hairWidthRatio = 0.663f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -214,8 +216,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_braids,
             assetPath = "hairstyles/women/box-braids.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.830f,
-            hairWidthRatio = 0.603f,
+            hairlineAnchorY = 0.522f,
+            hairWidthRatio = 0.585f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -228,8 +230,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_wavy,
             assetPath = "hairstyles/women/beach-waves.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.890f,
-            hairWidthRatio = 0.697f,
+            hairlineAnchorY = 0.522f,
+            hairWidthRatio = 0.663f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -242,8 +244,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_layers,
             assetPath = "hairstyles/women/long-layered.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.668f,
+            hairlineAnchorY = 0.520f,
+            hairWidthRatio = 0.660f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -256,8 +258,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_layers,
             assetPath = "hairstyles/women/long-layered.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.668f,
+            hairlineAnchorY = 0.520f,
+            hairWidthRatio = 0.660f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -270,8 +272,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_layers,
             assetPath = "hairstyles/women/long-layered.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.668f,
+            hairlineAnchorY = 0.520f,
+            hairWidthRatio = 0.660f,
             defaultScale = 1.0f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -286,8 +288,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_natural_quiff,
             assetPath = "hairstyles/men/natural-quiff.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.825f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.727f,
+            hairWidthRatio = 0.782f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -300,8 +302,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_fade,
             assetPath = "hairstyles/men/low-mid-fade.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.675f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.452f,
+            hairWidthRatio = 0.842f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -314,8 +316,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_m_quiff,
             assetPath = "hairstyles/men/quiff.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.845f,
-            hairWidthRatio = 0.865f,
+            hairlineAnchorY = 0.618f,
+            hairWidthRatio = 0.828f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -328,8 +330,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_layers,
             assetPath = "hairstyles/women/long-layered.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.835f,
-            hairWidthRatio = 0.668f,
+            hairlineAnchorY = 0.520f,
+            hairWidthRatio = 0.660f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -342,8 +344,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_bob,
             assetPath = "hairstyles/women/bob.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.730f,
-            hairWidthRatio = 0.593f,
+            hairlineAnchorY = 0.512f,
+            hairWidthRatio = 0.587f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f
@@ -356,8 +358,8 @@ object HairstyleOverlayEngine {
             overlayRes = R.drawable.overlay_w_wavy,
             assetPath = "hairstyles/women/beach-waves.webp",
             hairlineAnchorX = 0.50f,
-            hairlineAnchorY = 0.890f,
-            hairWidthRatio = 0.697f,
+            hairlineAnchorY = 0.522f,
+            hairWidthRatio = 0.663f,
             defaultScale = 1.18f,
             defaultOffsetX = 0f,
             defaultOffsetY = 0f

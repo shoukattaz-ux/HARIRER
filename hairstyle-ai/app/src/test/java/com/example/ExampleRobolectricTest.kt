@@ -55,8 +55,14 @@ class ExampleRobolectricTest {
         val homeMen = HairstyleRepository.homeMenCategories
         val homeWomen = HairstyleRepository.homeWomenCategories
 
-        assertEquals(listOf("All", "Fade", "Short", "Medium", "Long", "Curly", "Wavy"), homeMen)
-        assertEquals(listOf("All", "Short", "Medium", "Long", "Curly", "Wavy", "Braids"), homeWomen)
+        assertEquals(
+            listOf("All", "Fade", "Short", "Medium", "Long", "Curly", "Buzz Cut", "Quiff", "Side Part", "Wavy"),
+            homeMen
+        )
+        assertEquals(
+            listOf("All", "Ponytail", "Braids", "Pixie", "Layers", "Short", "Bob", "Medium", "Long", "Curly", "Wavy"),
+            homeWomen
+        )
     }
 
     @Test
@@ -193,7 +199,7 @@ class ExampleRobolectricTest {
         assertTrue(womenCategories.contains("Bob"))
         assertTrue(womenCategories.contains("Pixie"))
         assertTrue(womenCategories.contains("Layers"))
-        assertTrue(womenCategories.contains("Long Hair"))
+        assertTrue(womenCategories.contains("Long"))
         assertTrue(womenCategories.contains("Curly"))
         assertTrue(womenCategories.contains("Wavy"))
         assertTrue(womenCategories.contains("Braids"))

@@ -1,6 +1,7 @@
 package com.example.ui.screens.tryon
 
 import android.Manifest
+import android.widget.Toast
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -144,6 +145,8 @@ fun TryHairstyleScreen(
     onPhotoSelected: (UserPhotoSource) -> Unit,
     onChangeHairstyle: () -> Unit,
     onShowToBarber: ((String) -> Unit)? = null,
+    /** Sends a clean camera photo plus the selected style to AI for a photorealistic result. */
+    onMakeRealistic: ((Bitmap, HairstyleOverlayAsset) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -240,6 +243,7 @@ fun TryHairstyleScreen(
 
     // Save to Gallery states and triggers
     var liveCameraCaptureTrigger by remember { mutableStateOf<(() -> Bitmap?)?>(null) }
+    var liveRawCaptureTrigger by remember { mutableStateOf<(() -> Bitmap?)?>(null) }
     var photoUploadCaptureTrigger by remember { mutableStateOf<(() -> Bitmap?)?>(null) }
 
     var isSavingImage by remember { mutableStateOf(false) }
@@ -301,6 +305,9 @@ fun TryHairstyleScreen(
                         },
                         onRegisterCapture = { trigger ->
                             liveCameraCaptureTrigger = trigger
+                        },
+                        onRegisterRawCapture = { trigger ->
+                            liveRawCaptureTrigger = trigger
                         },
                         modifier = Modifier.fillMaxSize()
                     )
@@ -648,6 +655,33 @@ fun TryHairstyleScreen(
                     accentColor = themeAccent,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                 )
+            }
+
+            // Photorealistic AI version of the current look (the live overlay is only a quick preview)
+            val makeRealistic = onMakeRealistic
+            val assetForAi = activeAsset
+            if (currentMode == TryOnMode.LIVE_CAMERA && makeRealistic != null && assetForAi != null) {
+                Button(
+                    onClick = {
+                        val frame = liveRawCaptureTrigger?.invoke()
+                        if (frame != null) {
+                            makeRealistic(frame, assetForAi)
+                        } else {
+                            Toast.makeText(context, "Camera not ready yet. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = ElectricViolet, contentColor = Color.White),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 4.dp)
+                        .height(46.dp)
+                        .testTag("ar_make_realistic_btn")
+                ) {
+                    Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Make It Realistic (AI)", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                }
             }
 
             // Gender Category Selector: [ Men's Styles ] [ Women's Styles ]
