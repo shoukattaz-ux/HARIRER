@@ -31,7 +31,8 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          # Robolectric needs Java 21 to simulate Android SDK 35+ (the tests use SDK 36)
+          java-version: "21"
 
       - uses: android-actions/setup-android@v3
         with:
@@ -86,14 +87,14 @@ jobs:
           echo "==== Kotlin/Java errors ===="
           grep -E '^e: |error:|What went wrong' -A2 build.log | head -150 || true
 
-      - name: Run unit tests
-        run: gradle testDebugUnitTest
-
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: hairlook-debug-apk
           path: hairstyle-ai/app/build/outputs/apk/debug/*.apk
+
+      - name: Run unit tests
+        run: gradle testDebugUnitTest
 
       - name: Upload test reports
         if: failure()
