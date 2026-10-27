@@ -22,7 +22,9 @@ jobs:
       HAS_GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 != '' }}
       HAS_RELEASE_KEYSTORE: ${{ secrets.KEYSTORE_BASE64 != '' }}
       HAS_STABLE_DEBUG_KEY: ${{ secrets.DEBUG_KEYSTORE_BASE64 != '' }}
-      HAS_R2: ${{ secrets.R2_ACCESS_KEY_ID != '' && secrets.R2_SECRET_ACCESS_KEY != '' && secrets.R2_ENDPOINT != '' && secrets.R2_PUBLIC_BASE_URL != '' }}
+      HAS_R2: ${{ secrets.R2_ACCESS_KEY_ID != '' && secrets.R2_SECRET_ACCESS_KEY != '' && (vars.R2_PUBLIC_BASE_URL != '' || secrets.R2_PUBLIC_BASE_URL != '') }}
+      # Not secret: the S3 API address only contains the Cloudflare account ID
+      R2_ENDPOINT_DEFAULT: https://94cd5cc82406d3f30d1eb8b8c245d661.r2.cloudflarestorage.com
     defaults:
       run:
         working-directory: hairstyle-ai
@@ -57,7 +59,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PLAY_LICENSE_KEY: ${{ secrets.PLAY_LICENSE_KEY }}
-          UPDATE_MANIFEST_URL: ${{ secrets.UPDATE_MANIFEST_URL }}
+          UPDATE_MANIFEST_URL: ${{ secrets.UPDATE_MANIFEST_URL || (vars.R2_PUBLIC_BASE_URL != '' && format('{0}/update.json', vars.R2_PUBLIC_BASE_URL)) || '' }}
         run: |
           : > .env
           [ -n "$GEMINI_API_KEY" ] && echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
@@ -111,8 +113,8 @@ jobs:
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT || env.R2_ENDPOINT_DEFAULT }}
+          R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL || secrets.R2_PUBLIC_BASE_URL }}
           R2_BUCKET: ${{ secrets.R2_BUCKET || 'hairstyleapp' }}
           RELEASE_NOTES: ${{ github.event.head_commit.message || 'Improvements and fixes' }}
         run: |
