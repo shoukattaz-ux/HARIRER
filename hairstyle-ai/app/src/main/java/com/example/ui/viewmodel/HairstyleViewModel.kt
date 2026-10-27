@@ -10,8 +10,10 @@ import com.example.R
 import com.example.data.api.AiHairstyleService
 import com.example.data.api.AiTryOnConfig
 import com.example.data.model.Gender
+import com.example.data.model.GridTileState
 import com.example.data.model.HairstyleItem
 import com.example.data.model.ProcessingStage
+import com.example.data.model.StyleGridState
 import com.example.data.model.TryOnError
 import com.example.data.model.TryOnHistoryItem
 import com.example.data.model.UserHairProfile
@@ -20,6 +22,8 @@ import com.example.data.repository.AiQuotaManager
 import com.example.data.repository.AiTryOnResult
 import com.example.data.repository.GeminiTryOnRepository
 import com.example.data.repository.HairstyleRepository
+import com.example.data.repository.PaidApiTryOnRepository
+import com.example.data.repository.StyleGridGenerator
 import com.example.ui.components.AppLanguage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -408,6 +412,115 @@ class HairstyleViewModel(
                     _aiErrorMessage.value = message
                     onError(message)
                 }
+            }
+        }
+    }
+
+    // "4 AI Looks" grid: one photo, four recommended hairstyles generated side by side
+    private val _styleGrid = MutableStateFlow(StyleGridState())
+    val styleGrid: StateFlow<StyleGridState> = _styleGrid.asStateFlow()
+
+    private var styleGridJob: Job? = null
+
+    // Incremented per run so a cancelled run can never write into a newer grid
+    private var styleGridRunId = 0
+
+    /**
+     * Starts generating up to four hairstyle previews on the current user photo.
+     * Free tier: only as many tiles as the remaining free previews allow; the rest stay locked.
+     */
+    fun startStyleGrid(context: Context, styles: List<HairstyleItem>) {
+        val photo = _userPhoto.value
+        if (photo == null) {
+            _userFeedback.value = TryOnError.NoPhotoSelected.message
+            return
+        }
+        val picks = styles.take(StyleGridGenerator.GRID_SIZE)
+        if (picks.isEmpty()) return
+
+        styleGridJob?.cancel()
+        _styleGrid.value = StyleGridState(
+            styles = picks,
+            tiles = List(picks.size) { GridTileState.Queued }
+        )
+        runStyleGrid(context.applicationContext, photo, picks.indices.toList())
+    }
+
+    /** User-initiated retry of a single failed tile (never automatic). */
+    fun retryStyleGridTile(context: Context, index: Int) {
+        val state = _styleGrid.value
+        if (state.isRunning || state.tiles.getOrNull(index) !is GridTileState.Failed) return
+        val photo = _userPhoto.value ?: return
+        runStyleGrid(context.applicationContext, photo, listOf(index))
+    }
+
+    /** Generates the tiles that were locked by the free limit, e.g. after upgrading. */
+    fun unlockStyleGridTiles(context: Context) {
+        val state = _styleGrid.value
+        if (state.isRunning) return
+        val locked = state.tiles.indices.filter { state.tiles[it] is GridTileState.Locked }
+        val photo = _userPhoto.value ?: return
+        if (locked.isNotEmpty()) runStyleGrid(context.applicationContext, photo, locked)
+    }
+
+    /**
+     * Makes a finished grid tile the current try-on result so the regular result screen can show it.
+     * Returns the hairstyle of that tile, or null if the tile is not ready.
+     */
+    fun openStyleGridResult(index: Int): HairstyleItem? {
+        val state = _styleGrid.value
+        val tile = state.tiles.getOrNull(index) as? GridTileState.Ready ?: return null
+        val style = state.styles[index]
+        _activeTryOnItem.value = style
+        _aiResultBitmap.value = tile.bitmap
+        _isAiGenerated.value = tile.isAiGenerated
+        return style
+    }
+
+    private fun runStyleGrid(context: Context, photo: UserPhotoSource, indices: List<Int>) {
+        val isPaid = _isPaidVersion.value
+        // Same routing as single try-on: Paid uses the dedicated REST API, Free uses Gemini
+        val service: AiHairstyleService = if (isPaid) PaidApiTryOnRepository else aiService
+        // The free preview quota only limits the free tier
+        val allowed = if (isPaid) indices.size else minOf(indices.size, quotaManager.remainingAttempts.value)
+        val styles = _styleGrid.value.styles
+        val tint = _selectedColorTint.value
+
+        val runId = ++styleGridRunId
+        _styleGrid.update { it.copy(isRunning = true) }
+        styleGridJob = viewModelScope.launch {
+            try {
+                StyleGridGenerator.generate(
+                    styles = styles,
+                    allowed = allowed,
+                    indices = indices,
+                    generate = { style ->
+                        val result = service.transformHairstyle(context, photo, style, tint)
+                        if (result is AiTryOnResult.Success) {
+                            if (!isPaid) quotaManager.recordSuccess()
+                            _tryOnHistory.update { history ->
+                                listOf(
+                                    TryOnHistoryItem(
+                                        id = "hist_${System.currentTimeMillis()}_${style.id}",
+                                        hairstyleName = style.name,
+                                        category = "${style.gender.displayName} • ${style.category}",
+                                        date = "Just now",
+                                        matchScore = 98,
+                                        imageRes = R.drawable.img_tryon_result
+                                    )
+                                ) + history
+                            }
+                        }
+                        result
+                    },
+                    onTileUpdate = { index, tile ->
+                        if (runId == styleGridRunId) _styleGrid.update { state ->
+                            state.copy(tiles = state.tiles.toMutableList().also { it[index] = tile })
+                        }
+                    }
+                )
+            } finally {
+                if (runId == styleGridRunId) _styleGrid.update { it.copy(isRunning = false) }
             }
         }
     }

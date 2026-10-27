@@ -131,6 +131,7 @@ fun AiFaceScanScreen(
     onFaceShapeDetected: (String) -> Unit,
     onSelectHairstyle: (String) -> Unit,
     onTryLive: (HairstyleItem) -> Unit,
+    onGenerateLooks: (List<HairstyleItem>) -> Unit,
     onOpenFaceShapeGuide: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -536,6 +537,23 @@ fun AiFaceScanScreen(
                     exportMessage?.let {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(it, style = MaterialTheme.typography.bodySmall, color = TextMuted, textAlign = TextAlign.Center)
+                    }
+
+                    if (currentReport.recommendedStyles.size >= 2) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(
+                            onClick = { onGenerateLooks(currentReport.recommendedStyles) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(54.dp)
+                                .testTag("face_scan_generate_looks_btn"),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = HairLookPurple)
+                        ) {
+                            Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Generate My 4 AI Looks", fontWeight = FontWeight.Bold)
+                        }
                     }
 
                     currentReport.recommendedStyles.firstOrNull()?.let { topPick ->

@@ -17,6 +17,7 @@ sealed class AppScreen {
     object Favorites : AppScreen() // Screen 10: Saved & Favorites
     object FaceShape : AppScreen() // Screens 11 & 12: Face Shape & AI Recommendation
     object FaceScan : AppScreen() // AI Face Scan: animated face shape detection + Personalized Style Advice report
+    object StyleGrid : AppScreen() // "My 4 AI Looks": four recommended hairstyles generated on the user's photo
     data class BarberGuide(val hairstyleId: String? = null) : AppScreen() // Screen 13: Barber Guide
     object SearchExplore : AppScreen() // Screen 14: Search & Filters
     object Profile : AppScreen() // Screen 15: Profile

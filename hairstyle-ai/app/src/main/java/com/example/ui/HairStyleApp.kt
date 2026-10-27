@@ -46,6 +46,7 @@ import com.example.ui.screens.tryon.CompareStylesScreen
 import com.example.ui.screens.tryon.FaceShapeScreen
 import com.example.ui.screens.tryon.PaidAiStudioScreen
 import com.example.ui.screens.tryon.PhotoPreviewScreen
+import com.example.ui.screens.tryon.StyleGridScreen
 import com.example.ui.screens.tryon.TryHairstyleScreen
 import com.example.ui.screens.tryon.TryOnMode
 import com.example.ui.screens.tryon.TryOnProcessingScreen
@@ -87,9 +88,12 @@ fun HairStyleApp(
     val isPaidSubscribed by viewModel.isPaidSubscribed.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val feedbackMessage by viewModel.userFeedback.collectAsState()
+    val styleGrid by viewModel.styleGrid.collectAsState()
+    val context = LocalContext.current
 
     var quickChoiceItem by remember { mutableStateOf<HairstyleItem?>(null) }
     var showQuickSubscriptionDialog by remember { mutableStateOf(false) }
+    var showGridUpgradeDialog by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -151,6 +155,19 @@ fun HairStyleApp(
                 viewModel.subscribePaidVersion {
                     showQuickSubscriptionDialog = false
                     navigateTo(AppScreen.PaidAiStudio)
+                }
+            }
+        )
+    }
+
+    // Upgrade dialog for looks locked by the free limit in "My 4 AI Looks"
+    if (showGridUpgradeDialog) {
+        PaidSubscriptionDialog(
+            onDismissRequest = { showGridUpgradeDialog = false },
+            onConfirmPayTwoDollars = {
+                viewModel.subscribePaidVersion {
+                    showGridUpgradeDialog = false
+                    viewModel.unlockStyleGridTiles(context)
                 }
             }
         )
@@ -330,7 +347,32 @@ fun HairStyleApp(
                                 viewModel.setActiveTryOnItem(item)
                                 navigateTo(AppScreen.TryHairstyle(item.id))
                             },
+                            onGenerateLooks = { styles ->
+                                viewModel.startStyleGrid(context, styles)
+                                navigateTo(AppScreen.StyleGrid)
+                            },
                             onOpenFaceShapeGuide = { navigateTo(AppScreen.FaceShape) },
+                            onBack = { popBack() }
+                        )
+                    }
+
+                    is AppScreen.StyleGrid -> {
+                        StyleGridScreen(
+                            gridState = styleGrid,
+                            userPhoto = userPhoto,
+                            isPaidVersion = isPaidVersion,
+                            remainingFreeQuota = remainingFreeQuota,
+                            maxDailyQuota = viewModel.maxDailyQuota,
+                            onOpenResult = { index ->
+                                viewModel.openStyleGridResult(index)?.let { style ->
+                                    navigateTo(AppScreen.TryOnResult(style.id, isCustomPhoto = true))
+                                }
+                            },
+                            onRetryTile = { index -> viewModel.retryStyleGridTile(context, index) },
+                            onUnlockLocked = {
+                                if (isPaidVersion) viewModel.unlockStyleGridTiles(context)
+                                else showGridUpgradeDialog = true
+                            },
                             onBack = { popBack() }
                         )
                     }
