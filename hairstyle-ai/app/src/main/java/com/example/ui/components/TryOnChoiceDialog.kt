@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.data.api.AiTryOnConfig
 import com.example.data.model.HairstyleItem
 import com.example.ui.theme.CardBorderStroke
 import com.example.ui.theme.ChampagneGold
@@ -319,20 +320,23 @@ fun TryOnChoiceBottomSheet(
 }
 
 /**
- * High-Converting $2.00 Subscription Dialog
- * Triggered when user selects Paid Version but has not yet paid the $2 subscription.
+ * HairLook Premium upgrade dialog. Price and billing period come from Google Play (localized);
+ * the payment itself happens in Google Play's own purchase sheet.
  */
 @Composable
 fun PaidSubscriptionDialog(
+    priceLabel: String?,
+    periodLabel: String?,
+    isBillingReady: Boolean,
     onDismissRequest: () -> Unit,
-    onConfirmPayTwoDollars: () -> Unit
+    onPurchase: () -> Unit,
+    onRestorePurchases: () -> Unit
 ) {
-    var isProcessingPayment by remember { mutableStateOf(false) }
+    val canPurchase = isBillingReady && priceLabel != null
+    val priceText = priceLabel ?: "…"
 
     Dialog(
-        onDismissRequest = {
-            if (!isProcessingPayment) onDismissRequest()
-        },
+        onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
@@ -366,7 +370,7 @@ fun PaidSubscriptionDialog(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Text(
-                    text = "Unlock Paid VIP AI Studio",
+                    text = "HairLook Premium",
                     style = MaterialTheme.typography.titleLarge,
                     color = ChampagneGold,
                     fontWeight = FontWeight.Bold,
@@ -374,7 +378,7 @@ fun PaidSubscriptionDialog(
                 )
 
                 Text(
-                    text = "Unlock all premium styles for just $2.00",
+                    text = "More AI looks, scenes and previews every day",
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextPrimary,
                     fontWeight = FontWeight.SemiBold,
@@ -383,7 +387,7 @@ fun PaidSubscriptionDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Price Card: $2.00
+                // Price Card (localized price from Google Play)
                 Surface(
                     shape = RoundedCornerShape(18.dp),
                     color = SurfaceDark,
@@ -395,7 +399,7 @@ fun PaidSubscriptionDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "VIP ACCESS FEE",
+                            text = "PREMIUM",
                             color = TextSecondary,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
@@ -404,20 +408,22 @@ fun PaidSubscriptionDialog(
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(verticalAlignment = Alignment.Bottom) {
                             Text(
-                                text = "$2.00",
+                                text = priceText,
                                 color = ChampagneGold,
                                 fontSize = 34.sp,
                                 fontWeight = FontWeight.ExtraBold
                             )
-                            Text(
-                                text = " / One-Time Access",
-                                color = TextMuted,
-                                fontSize = 13.sp,
-                                modifier = Modifier.padding(bottom = 6.dp)
-                            )
+                            if (periodLabel != null) {
+                                Text(
+                                    text = " / $periodLabel",
+                                    color = TextMuted,
+                                    fontSize = 13.sp,
+                                    modifier = Modifier.padding(bottom = 6.dp)
+                                )
+                            }
                         }
                         Text(
-                            text = "One-time payment for full access to all hairstyles",
+                            text = if (periodLabel != null) "Cancel anytime in Google Play" else "One-time purchase",
                             color = SuccessGreen,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium
@@ -433,32 +439,28 @@ fun PaidSubscriptionDialog(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     VipBenefitRow(
-                        title = "Dedicated AI REST API Engine",
-                        subtitle = "Ultra-fast connection optimized for hairstyle generation"
+                        title = "${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT} AI previews every day",
+                        subtitle = "Instead of ${AiTryOnConfig.FREE_DAILY_TRY_LIMIT} on the free plan"
                     )
                     VipBenefitRow(
-                        title = "Photorealistic Real-Hair Follicle Blend",
-                        subtitle = "Natural blending with head contour and anatomical hairline"
+                        title = "All four looks in My 4 AI Looks",
+                        subtitle = "See every recommended style on your own photo"
                     )
                     VipBenefitRow(
-                        title = "Interactive Hairstyles Line",
-                        subtitle = "Instant preview across multiple curated styles with one tap"
+                        title = "Style Score scenes",
+                        subtitle = "Office, Beach and Evening, as photos or 3D animated"
                     )
                     VipBenefitRow(
-                        title = "Full Resolution HD Export",
-                        subtitle = "Save watermark-free photos directly to your device gallery"
+                        title = "Secure checkout with Google Play",
+                        subtitle = "Payment is handled by Google; HairLook never sees your card"
                     )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Payment Action Button ($2.00)
                 Button(
-                    onClick = {
-                        isProcessingPayment = true
-                        onConfirmPayTwoDollars()
-                    },
-                    enabled = !isProcessingPayment,
+                    onClick = onPurchase,
+                    enabled = canPurchase,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ChampagneGold,
                         contentColor = ObsidianBackground
@@ -469,19 +471,7 @@ fun PaidSubscriptionDialog(
                         .height(52.dp)
                         .testTag("pay_two_dollars_btn")
                 ) {
-                    if (isProcessingPayment) {
-                        CircularProgressIndicator(
-                            color = ObsidianBackground,
-                            strokeWidth = 2.5.dp,
-                            modifier = Modifier.size(22.dp)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = "Processing $2.00 Payment...",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                    } else {
+                    if (canPurchase) {
                         Icon(
                             imageVector = Icons.Default.CreditCard,
                             contentDescription = null,
@@ -489,24 +479,54 @@ fun PaidSubscriptionDialog(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "Pay $2.00 & Subscribe",
+                            text = "Continue with Google Play",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    } else {
+                        CircularProgressIndicator(
+                            color = ObsidianBackground,
+                            strokeWidth = 2.5.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "Connecting to Google Play…",
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                TextButton(
-                    onClick = onDismissRequest,
-                    enabled = !isProcessingPayment
-                ) {
+                if (periodLabel != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Maybe Later",
+                        text = "Renews automatically at $priceText per $periodLabel until you cancel. " +
+                            "Cancel at least 24 hours before renewal in Google Play → Subscriptions.",
                         color = TextMuted,
-                        fontSize = 12.sp
+                        fontSize = 10.sp,
+                        lineHeight = 13.sp,
+                        textAlign = TextAlign.Center
                     )
+                }
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = onRestorePurchases) {
+                        Text(
+                            text = "Restore Purchase",
+                            color = TextSecondary,
+                            fontSize = 12.sp
+                        )
+                    }
+                    TextButton(onClick = onDismissRequest) {
+                        Text(
+                            text = "Maybe Later",
+                            color = TextMuted,
+                            fontSize = 12.sp
+                        )
+                    }
                 }
             }
         }

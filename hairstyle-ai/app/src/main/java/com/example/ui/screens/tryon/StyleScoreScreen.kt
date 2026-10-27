@@ -428,8 +428,7 @@ private fun SceneAction(
     onGenerate: () -> Unit,
     onUpgrade: () -> Unit
 ) {
-    val costNote = if (isPaidVersion) "Premium · unlimited scenes"
-    else "Uses 1 free AI preview ($remainingFreeQuota/$maxDailyQuota left today)"
+    val costNote = "Uses 1 AI preview ($remainingFreeQuota/$maxDailyQuota left today${if (isPaidVersion) " · Premium" else ""})"
     when (tile) {
         null -> Column {
             Button(
@@ -470,7 +469,8 @@ private fun SceneAction(
         }
         GridTileState.Locked -> Column {
             Text(
-                text = "You've used today's $maxDailyQuota free AI previews.",
+                text = if (isPaidVersion) "You've used today's $maxDailyQuota Premium AI previews. They reset at midnight."
+                else "You've used today's $maxDailyQuota free AI previews. Premium includes ${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT} a day.",
                 style = MaterialTheme.typography.bodySmall,
                 color = TextSecondary
             )
@@ -483,7 +483,7 @@ private fun SceneAction(
             ) {
                 Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(if (isPaidVersion) "Create ${scene.label} Scene" else "Unlock Unlimited Scenes")
+                Text(if (isPaidVersion) "Try Again" else "Upgrade to Premium")
             }
         }
         is GridTileState.Ready -> Unit

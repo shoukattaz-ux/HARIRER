@@ -67,6 +67,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.data.api.AiTryOnConfig
 import com.example.ui.theme.CardBorderStroke
 import com.example.ui.theme.ElectricViolet
 import com.example.ui.theme.GoldStar
@@ -236,9 +237,9 @@ val AllKeyFeatures: List<KeyFeatureItem> = listOf(
         id = "monetization_tier",
         titleEn = "Monetization & VIP",
         titleUrdu = "Monetization & VIP",
-        descriptionEn = "Free tier (3 daily AI try-ons) vs $2.00/mo VIP Unlimited.",
-        descriptionUrdu = "Free tier (3 daily AI try-ons) vs $2.00/mo VIP Unlimited.",
-        badgeText = "VIP $2.00",
+        descriptionEn = "Free: ${AiTryOnConfig.FREE_DAILY_TRY_LIMIT} AI previews a day · Premium: ${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT} a day.",
+        descriptionUrdu = "Free: ${AiTryOnConfig.FREE_DAILY_TRY_LIMIT} AI previews a day · Premium: ${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT} a day.",
+        badgeText = "Premium",
         icon = Icons.Default.WorkspacePremium,
         accentColor = GoldStar,
         gradientStart = Color(0xFFB45309),
@@ -559,7 +560,7 @@ fun SupportedLanguagesCard(
 }
 
 /**
- * Monetization & Roadmap Card: Free vs $2.00 Pro Plan
+ * Monetization & Roadmap Card: Free vs Premium (price shown by Google Play)
  */
 @Composable
 fun MonetizationRoadmapCard(
@@ -609,7 +610,7 @@ fun MonetizationRoadmapCard(
                             color = TextPrimary
                         )
                         Text(
-                            text = "Free Tier vs VIP Pro ($2.00)",
+                            text = "Free vs Premium",
                             style = MaterialTheme.typography.labelSmall,
                             color = GoldStar
                         )
@@ -652,7 +653,7 @@ fun MonetizationRoadmapCard(
                             fontSize = 13.sp
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "• 3 AI try-ons / day", color = TextSecondary, fontSize = 11.sp)
+                        Text(text = "• ${AiTryOnConfig.FREE_DAILY_TRY_LIMIT} AI previews / day", color = TextSecondary, fontSize = 11.sp)
                         Text(text = "• Unlimited AR preview", color = TextSecondary, fontSize = 11.sp)
                         Text(text = "• Barber guides & styles", color = TextSecondary, fontSize = 11.sp)
                     }
@@ -667,15 +668,15 @@ fun MonetizationRoadmapCard(
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
-                            text = "VIP ($2.00/mo)",
+                            text = "Premium",
                             fontWeight = FontWeight.Bold,
                             color = GoldStar,
                             fontSize = 13.sp
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "• Unlimited AI try-ons", color = Color(0xFFFDE68A), fontSize = 11.sp)
-                        Text(text = "• Ultra HD AI Rendering", color = Color(0xFFFDE68A), fontSize = 11.sp)
-                        Text(text = "• Ad-free & VIP styles", color = Color(0xFFFDE68A), fontSize = 11.sp)
+                        Text(text = "• ${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT} AI previews / day", color = Color(0xFFFDE68A), fontSize = 11.sp)
+                        Text(text = "• All 4 AI Looks unlocked", color = Color(0xFFFDE68A), fontSize = 11.sp)
+                        Text(text = "• Style Score scenes", color = Color(0xFFFDE68A), fontSize = 11.sp)
                     }
                 }
             }
@@ -700,7 +701,7 @@ fun MonetizationRoadmapCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (isPaidSubscribed) "VIP Plan Active — Thank You!" else "Upgrade to VIP ($2.00 / month)",
+                    text = if (isPaidSubscribed) "Premium Active · Manage Subscription" else "Upgrade to Premium",
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp
                 )

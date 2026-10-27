@@ -15,12 +15,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.billing.BillingManager
 import com.example.ui.HairStyleApp
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.theme.ObsidianBackground
 import com.example.ui.viewmodel.HairstyleViewModel
 
 class MainActivity : ComponentActivity() {
+    override fun onResume() {
+        super.onResume()
+        // Subscriptions can be canceled, renewed or refunded while the app is in the background
+        BillingManager.refreshPurchases()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

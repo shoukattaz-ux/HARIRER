@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.data.api.AiTryOnConfig
 import com.example.data.repository.AiQuotaManager
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -26,7 +27,30 @@ class AiQuotaManagerTest {
 
     @After
     fun tearDown() {
+        AiQuotaManager.setPremium(false)
         AiQuotaManager.dayProvider = originalDayProvider
+    }
+
+    @Test
+    fun premium_raisesDailyLimit_andKeepsTodaysUsage() {
+        repeat(AiTryOnConfig.FREE_DAILY_TRY_LIMIT) { AiQuotaManager.recordSuccess() }
+        assertFalse(AiQuotaManager.canGenerate())
+
+        AiQuotaManager.setPremium(true)
+        assertTrue(AiQuotaManager.canGenerate())
+        assertEquals(
+            AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT - AiTryOnConfig.FREE_DAILY_TRY_LIMIT,
+            AiQuotaManager.remainingAttempts.value
+        )
+    }
+
+    @Test
+    fun premiumEnding_restoresFreeLimit() {
+        AiQuotaManager.setPremium(true)
+        repeat(5) { AiQuotaManager.recordSuccess() }
+        AiQuotaManager.setPremium(false)
+        assertFalse(AiQuotaManager.canGenerate())
+        assertEquals(0, AiQuotaManager.remainingAttempts.value)
     }
 
     @Test

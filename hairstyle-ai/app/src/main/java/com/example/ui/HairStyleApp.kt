@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.analysis.StyleScoreCalculator
-import com.example.data.api.AiTryOnConfig
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.model.Gender
@@ -59,6 +58,7 @@ import com.example.ui.screens.tryon.TryOnProcessingScreen
 import com.example.ui.screens.tryon.TryOnResultScreen
 import com.example.ui.screens.welcome.StyleWelcomeScreen
 import com.example.ui.viewmodel.HairstyleViewModel
+import com.example.util.findActivity
 
 @Composable
 fun HairStyleApp(
@@ -99,14 +99,25 @@ fun HairStyleApp(
     val confirmedFaceShape by viewModel.confirmedFaceShape.collectAsState()
     val skinUndertone by viewModel.skinUndertone.collectAsState()
     val showAiConsentDialog by viewModel.showAiConsentDialog.collectAsState()
-    // Unlimited AI only once Premium purchases are verified (see AiTryOnConfig)
-    val hasUnlimitedAi = isPaidVersion && AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED
+    val billingState by viewModel.billingState.collectAsState()
     val context = LocalContext.current
 
     var quickChoiceItem by remember { mutableStateOf<HairstyleItem?>(null) }
-    var showQuickSubscriptionDialog by remember { mutableStateOf(false) }
-    var showGridUpgradeDialog by remember { mutableStateOf(false) }
-    var showSceneUpgradeDialog by remember { mutableStateOf(false) }
+    var showUpgradeDialog by remember { mutableStateOf(false) }
+    // What to do once a purchase started from an upgrade prompt becomes active
+    var afterPremiumActivated by remember { mutableStateOf<(() -> Unit)?>(null) }
+
+    fun openUpgrade(afterActivation: (() -> Unit)? = null) {
+        afterPremiumActivated = afterActivation
+        showUpgradeDialog = true
+    }
+
+    LaunchedEffect(isPaidVersion) {
+        if (isPaidVersion) {
+            afterPremiumActivated?.invoke()
+            afterPremiumActivated = null
+        }
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -160,41 +171,26 @@ fun HairStyleApp(
         )
     }
 
-    // $2.00 Subscription Dialog for quick try
-    if (showQuickSubscriptionDialog) {
+    // Premium upgrade: price from Google Play, payment in Google Play's purchase sheet
+    if (showUpgradeDialog) {
         PaidSubscriptionDialog(
-            onDismissRequest = { showQuickSubscriptionDialog = false },
-            onConfirmPayTwoDollars = {
-                viewModel.subscribePaidVersion {
-                    showQuickSubscriptionDialog = false
-                    navigateTo(AppScreen.PaidAiStudio)
+            priceLabel = billingState.priceLabel,
+            periodLabel = billingState.periodLabel,
+            isBillingReady = billingState.isReady,
+            onDismissRequest = {
+                showUpgradeDialog = false
+                afterPremiumActivated = null
+            },
+            onPurchase = {
+                showUpgradeDialog = false
+                val activity = context.findActivity()
+                if (activity != null) {
+                    viewModel.purchasePremium(activity)
+                } else {
+                    viewModel.showFeedback("Couldn't open Google Play. Please try again.")
                 }
-            }
-        )
-    }
-
-    // Upgrade dialog for looks locked by the free limit in "My 4 AI Looks"
-    if (showGridUpgradeDialog) {
-        PaidSubscriptionDialog(
-            onDismissRequest = { showGridUpgradeDialog = false },
-            onConfirmPayTwoDollars = {
-                viewModel.subscribePaidVersion {
-                    showGridUpgradeDialog = false
-                    viewModel.unlockStyleGridTiles(context)
-                }
-            }
-        )
-    }
-
-    // Upgrade dialog for Style Score scenes once the free previews are used up
-    if (showSceneUpgradeDialog) {
-        PaidSubscriptionDialog(
-            onDismissRequest = { showSceneUpgradeDialog = false },
-            onConfirmPayTwoDollars = {
-                viewModel.subscribePaidVersion {
-                    showSceneUpgradeDialog = false
-                }
-            }
+            },
+            onRestorePurchases = { viewModel.restorePurchases() }
         )
     }
 
@@ -332,7 +328,10 @@ fun HairStyleApp(
                             currentLanguage = selectedLanguage,
                             onLanguageSelected = { viewModel.setLanguage(it) },
                             isPaidSubscribed = isPaidSubscribed,
-                            onUpgradeClick = { showQuickSubscriptionDialog = true },
+                            onUpgradeClick = {
+                                if (isPaidVersion) viewModel.manageSubscription(context)
+                                else openUpgrade { navigateTo(AppScreen.PaidAiStudio) }
+                            },
                             onNavigateToPhotoUpload = { navigateTo(AppScreen.CameraUpload()) },
                             onNavigateToFavorites = { navigateTo(AppScreen.Favorites) },
                             onNavigateBack = null,
@@ -407,7 +406,7 @@ fun HairStyleApp(
                         StyleGridScreen(
                             gridState = styleGrid,
                             userPhoto = userPhoto,
-                            isPaidVersion = hasUnlimitedAi,
+                            isPaidVersion = isPaidVersion,
                             remainingFreeQuota = remainingFreeQuota,
                             maxDailyQuota = viewModel.maxDailyQuota,
                             onOpenResult = { index ->
@@ -417,12 +416,12 @@ fun HairStyleApp(
                             },
                             onRetryTile = { index -> viewModel.retryStyleGridTile(context, index) },
                             onUnlockLocked = {
-                                when {
-                                    hasUnlimitedAi -> viewModel.unlockStyleGridTiles(context)
-                                    AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED -> {
-                                        showGridUpgradeDialog = true
-                                    }
-                                    else -> viewModel.showFeedback("Free AI previews reset every day. Come back tomorrow for more looks!")
+                                if (isPaidVersion && remainingFreeQuota > 0) {
+                                    viewModel.unlockStyleGridTiles(context)
+                                } else if (isPaidVersion) {
+                                    viewModel.showFeedback("You've used today's Premium AI previews. They reset at midnight.")
+                                } else {
+                                    openUpgrade { viewModel.unlockStyleGridTiles(context) }
                                 }
                             },
                             onBack = { popBack() }
@@ -440,17 +439,17 @@ fun HairStyleApp(
                             lookBitmap = aiResultBitmap,
                             styleScore = score,
                             sceneStudio = sceneStudio,
-                            isPaidVersion = hasUnlimitedAi,
+                            isPaidVersion = isPaidVersion,
                             remainingFreeQuota = remainingFreeQuota,
                             maxDailyQuota = viewModel.maxDailyQuota,
                             onGenerateScene = { scene, renderStyle ->
                                 viewModel.generateScene(context, scene, renderStyle)
                             },
                             onUpgrade = {
-                                if (AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED) {
-                                    showSceneUpgradeDialog = true
+                                if (isPaidVersion) {
+                                    viewModel.showFeedback("You've used today's Premium AI previews. They reset at midnight.")
                                 } else {
-                                    viewModel.showFeedback("Free AI previews reset every day. Come back tomorrow for more scenes!")
+                                    openUpgrade()
                                 }
                             },
                             onBack = { popBack() }

@@ -23,7 +23,10 @@ object AiQuotaManager {
     private const val KEY_DAY = "quota_day"
     private const val KEY_USED = "quota_used"
 
-    val maxDailyLimit: Int = AiTryOnConfig.FREE_DAILY_TRY_LIMIT
+    /** Today's limit: the free limit, or the Premium limit while a verified purchase is active. */
+    @Volatile
+    var maxDailyLimit: Int = AiTryOnConfig.FREE_DAILY_TRY_LIMIT
+        private set
 
     private var prefs: SharedPreferences? = null
     private var day: String = ""
@@ -41,7 +44,7 @@ object AiQuotaManager {
         val store = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs = store
         day = store.getString(KEY_DAY, "").orEmpty()
-        used = store.getInt(KEY_USED, 0).coerceIn(0, maxDailyLimit)
+        used = store.getInt(KEY_USED, 0).coerceAtLeast(0)
         refreshDay()
     }
 
@@ -69,9 +72,19 @@ object AiQuotaManager {
     @Synchronized
     fun recordSuccess() {
         refreshDay()
-        used = (used + 1).coerceAtMost(maxDailyLimit)
+        used = (used + 1).coerceAtMost(AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT)
         persist()
         publish()
+    }
+
+    /**
+     * Switches between the free and Premium daily limits. Usage already counted today is kept,
+     * so upgrading adds the difference instead of starting over.
+     */
+    @Synchronized
+    fun setPremium(isPremium: Boolean) {
+        maxDailyLimit = if (isPremium) AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT else AiTryOnConfig.FREE_DAILY_TRY_LIMIT
+        refreshDay()
     }
 
     /** Re-checks the date so a new day's quota shows up without restarting the app. */

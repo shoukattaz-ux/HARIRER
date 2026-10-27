@@ -51,6 +51,28 @@ Without `google-services.json`:
 - Custom try-on endpoints must use `https://`; there is no default third-party endpoint.
 - HTTP logging is disabled in release builds and never logs request bodies, API keys or tokens.
 
-### Not done yet
-- **Premium purchases are not real payments.** Integrate Google Play Billing (ideally with server-side
-  purchase verification) before charging users, then set `AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED = true`.
+## Google Play Billing (Premium)
+
+Premium is a Google Play purchase. It is never stored as a local flag: on every launch and resume the
+app re-reads purchases from Google Play, verifies their signature, acknowledges new ones (required
+within 3 days or Google refunds them), and grants Premium only while a valid purchase exists.
+Premium raises the daily AI preview limit from 3 to 30 (`AiTryOnConfig`).
+
+1. **Upload the app to Play Console.** Billing only works for apps uploaded to a testing track:
+   upload a signed release AAB to **Internal testing**.
+2. **Create the product.** Monetize with Play → Products → **Subscriptions** → create
+   `hairlook_premium` with an auto-renewing monthly base plan, set the price, and **activate** it.
+   (For a one-time purchase instead, create an in-app product with the same ID and set
+   `BillingConfig.PREMIUM_PRODUCT_TYPE = BillingClient.ProductType.INAPP`.)
+3. **Add the license key.** Monetization setup → Licensing → copy the Base64 RSA public key into
+   `.env` as `PLAY_LICENSE_KEY=...`. It is a public key (safe in the app) and is used to reject
+   forged purchases. Without it, signature verification is skipped.
+4. **Test without being charged.** Settings → License testing → add the testers' Google accounts,
+   install the app from the internal testing link, and buy Premium with the test card. Also test
+   cancel, a declined card, and a "slow" (pending) payment.
+5. **Recommended before scaling:** verify purchase tokens on a server with the Google Play Developer
+   API and subscribe to Real-time developer notifications so refunds and chargebacks are handled
+   immediately. Firebase App Check (above) already blocks modified apps from using the AI backend.
+
+Users can manage or cancel Premium from the Premium card (opens Google Play → Subscriptions), and
+"Restore Purchase" in the upgrade dialog re-checks Google Play after a reinstall.

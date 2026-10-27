@@ -183,8 +183,7 @@ fun StyleGridScreen(
                     color = TextPrimary
                 )
                 Text(
-                    text = if (isPaidVersion) "Premium · all looks unlocked"
-                    else "Free previews left today: $remainingFreeQuota/$maxDailyQuota",
+                    text = "${if (isPaidVersion) "Premium" else "Free"} · AI previews left today: $remainingFreeQuota/$maxDailyQuota",
                     style = MaterialTheme.typography.bodySmall,
                     color = HairLookPurpleGradientEnd
                 )
@@ -277,8 +276,8 @@ fun StyleGridScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = if (isPaidVersion) "Generate the remaining looks now."
-                        else "The free plan includes $maxDailyQuota AI previews a day. Upgrade to see all four looks.",
+                        text = if (isPaidVersion) "Premium includes $maxDailyQuota AI previews a day. Generate the remaining looks now."
+                        else "The free plan includes $maxDailyQuota AI previews a day. Premium includes ${AiTryOnConfig.PREMIUM_DAILY_TRY_LIMIT}, enough to see all four looks.",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextSecondary
                     )
@@ -293,7 +292,7 @@ fun StyleGridScreen(
                     ) {
                         Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(if (isPaidVersion) "Generate Remaining Looks" else "Unlock All Looks")
+                        Text(if (isPaidVersion) "Generate Remaining Looks" else "Upgrade to Premium")
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))

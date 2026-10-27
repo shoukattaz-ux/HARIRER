@@ -1,7 +1,10 @@
 package com.example.ui.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -9,12 +12,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.BuildConfig
 import com.example.R
 import com.example.analysis.HairColorAdvisor
+import com.example.billing.BillingManager
 import com.example.data.api.AiHairstyleService
 import com.example.data.api.AiImageEditService
 import com.example.data.api.LifestyleScene
 import com.example.data.api.SceneRenderStyle
 import com.example.data.api.ScenePromptBuilder
-import com.example.data.api.AiTryOnConfig
 import com.example.data.model.Gender
 import com.example.data.model.GridTileState
 import com.example.data.model.HairstyleItem
@@ -84,33 +87,34 @@ class HairstyleViewModel(
         _userFeedback.value = "Language switched to ${language.englishName}"
     }
 
-    // App Membership Tier: Free vs Paid Version ($2 Subscription)
-    private val _isPaidSubscribed = MutableStateFlow(
-        themePrefs.getBoolean("pref_paid_subscribed", false)
-    )
-    val isPaidSubscribed: StateFlow<Boolean> = _isPaidSubscribed.asStateFlow()
+    // App Membership Tier: Premium comes only from verified Google Play purchases (never a local flag)
+    val billingState: StateFlow<BillingManager.BillingState> = BillingManager.state
 
-    private val _isPaidVersion = MutableStateFlow(
-        themePrefs.getBoolean("pref_paid_subscribed", false)
-    )
+    private val _isPaidVersion = MutableStateFlow(BillingManager.state.value.isPremium)
     val isPaidVersion: StateFlow<Boolean> = _isPaidVersion.asStateFlow()
+    val isPaidSubscribed: StateFlow<Boolean> = isPaidVersion
 
-    fun subscribePaidVersion(onComplete: () -> Unit) {
-        viewModelScope.launch {
-            kotlinx.coroutines.delay(1000)
-            _isPaidSubscribed.value = true
-            _isPaidVersion.value = true
-            themePrefs.edit()
-                .putBoolean("pref_paid_subscribed", true)
-                .putBoolean("pref_paid_version", true)
-                .apply()
-            onComplete()
+    /** Opens the Google Play purchase sheet for Premium. */
+    fun purchasePremium(activity: Activity) {
+        BillingManager.launchPurchase(activity)
+    }
+
+    /** Opens Google Play's subscription management page (manage or cancel Premium). */
+    fun manageSubscription(context: Context) {
+        try {
+            val url = BillingManager.manageSubscriptionUrl(context.packageName)
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e: Exception) {
+            _userFeedback.value = "Open Google Play → Payments & subscriptions to manage Premium."
         }
     }
 
-    fun setPaidVersion(isPaid: Boolean) {
-        _isPaidVersion.value = isPaid
-        themePrefs.edit().putBoolean("pref_paid_version", isPaid).apply()
+    /** Re-checks Google Play for an existing Premium purchase (e.g. after reinstalling). */
+    fun restorePurchases() {
+        BillingManager.refreshPurchases()
+        _userFeedback.value = "Checking Google Play for your purchases…"
     }
 
     // Paid Dedicated REST API Configuration
@@ -188,7 +192,9 @@ class HairstyleViewModel(
 
     // Free Usage Tracking
     val remainingFreeQuota: StateFlow<Int> = quotaManager.remainingAttempts
-    val maxDailyQuota: Int = quotaManager.maxDailyLimit
+    /** Free or Premium daily limit (changes when a purchase becomes active). */
+    val maxDailyQuota: Int
+        get() = quotaManager.maxDailyLimit
 
     // Try-on Error State
     private val _tryOnError = MutableStateFlow<TryOnError?>(null)
@@ -355,13 +361,6 @@ class HairstyleViewModel(
         _hasAiPhotoConsent.value = false
     }
 
-    /**
-     * Premium "unlimited AI" only applies once purchases are verified with Google Play Billing
-     * (see [AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED]); until then everyone uses the daily free quota.
-     */
-    private val hasUnlimitedAi: Boolean
-        get() = _isPaidVersion.value && AiTryOnConfig.PREMIUM_UNLIMITED_AI_ENABLED
-
     /** Premium uses a dedicated engine only when its owner configured one; otherwise Gemini. */
     private fun tryOnService(): AiHairstyleService =
         if (_isPaidVersion.value && PaidApiTryOnRepository.isCustomEndpointConfigured(getApplication())) {
@@ -401,7 +400,7 @@ class HairstyleViewModel(
         }
 
         // Cost Protection 2: Check Free Usage Limit before making any network call
-        if (!hasUnlimitedAi && !quotaManager.canGenerate()) {
+        if (!quotaManager.canGenerate()) {
             val error = TryOnError.QuotaExceeded
             _tryOnError.value = error
             _aiErrorMessage.value = error.message
@@ -458,7 +457,7 @@ class HairstyleViewModel(
             when (result) {
                 is AiTryOnResult.Success -> {
                     // Cost Protection 3: Decrement free quota ONLY on successful generation
-                    if (!hasUnlimitedAi) quotaManager.recordSuccess()
+                    quotaManager.recordSuccess()
 
                     _aiResultBitmap.value = result.resultBitmap
                     _isAiGenerated.value = result.isAiGenerated
@@ -555,11 +554,11 @@ class HairstyleViewModel(
     }
 
     private fun runStyleGrid(context: Context, photo: UserPhotoSource, indices: List<Int>) {
-        val isUnlimited = hasUnlimitedAi
         // Same routing as single try-on
         val service = tryOnService()
+        // Free and Premium both have a daily limit (Premium's is higher)
         quotaManager.refreshDay()
-        val allowed = if (isUnlimited) indices.size else minOf(indices.size, quotaManager.remainingAttempts.value)
+        val allowed = minOf(indices.size, quotaManager.remainingAttempts.value)
         val styles = _styleGrid.value.styles
         val tint = _selectedColorTint.value
 
@@ -574,7 +573,7 @@ class HairstyleViewModel(
                     generate = { style ->
                         val result = service.transformHairstyle(context, photo, style, tint)
                         if (result is AiTryOnResult.Success) {
-                            if (!isUnlimited) quotaManager.recordSuccess()
+                            quotaManager.recordSuccess()
                             _tryOnHistory.update { history ->
                                 listOf(
                                     TryOnHistoryItem(
@@ -629,8 +628,7 @@ class HairstyleViewModel(
         if (!ensureAiPhotoConsent(action = { generateScene(context, scene, renderStyle) })) return
 
         val key = SceneStudioState.key(scene, renderStyle)
-        val isUnlimited = hasUnlimitedAi
-        if (!isUnlimited && !quotaManager.canGenerate()) {
+        if (!quotaManager.canGenerate()) {
             _sceneStudio.update { it.copy(scenes = it.scenes + (key to GridTileState.Locked)) }
             return
         }
@@ -643,7 +641,7 @@ class HairstyleViewModel(
                 val prompt = ScenePromptBuilder.buildScenePrompt(style, scene, renderStyle)
                 val tile = when (val result = sceneService.editImage(appContext, UserPhotoSource.Captured(source), prompt)) {
                     is AiTryOnResult.Success -> {
-                        if (!isUnlimited) quotaManager.recordSuccess()
+                        quotaManager.recordSuccess()
                         GridTileState.Ready(result.resultBitmap, result.isAiGenerated)
                     }
                     is AiTryOnResult.Error -> GridTileState.Failed(
@@ -758,6 +756,18 @@ class HairstyleViewModel(
 
     fun showFeedback(msg: String) {
         _userFeedback.value = msg
+    }
+
+    // Declared last so every property above is initialized before the collectors start
+    init {
+        // Remove the old locally stored "paid" flags; they could be set without paying
+        themePrefs.edit().remove("pref_paid_subscribed").remove("pref_paid_version").apply()
+        viewModelScope.launch {
+            BillingManager.state.collect { _isPaidVersion.value = it.isPremium }
+        }
+        viewModelScope.launch {
+            BillingManager.messages.collect { _userFeedback.value = it }
+        }
     }
 
     private companion object {

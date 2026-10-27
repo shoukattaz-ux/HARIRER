@@ -3,11 +3,14 @@ package com.example
 import android.app.Application
 import android.util.Log
 import com.example.data.api.AiBackendConfig
+import com.example.billing.BillingManager
 import com.example.data.repository.AiQuotaManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class HairLookApplication : Application() {
 
@@ -15,6 +18,15 @@ class HairLookApplication : Application() {
         super.onCreate()
         AiQuotaManager.init(this)
         setUpFirebase()
+        setUpBilling()
+    }
+
+    /** Premium comes only from verified Google Play purchases; it raises the daily AI limit. */
+    private fun setUpBilling() {
+        BillingManager.init(this)
+        MainScope().launch {
+            BillingManager.state.collect { AiQuotaManager.setPremium(it.isPremium) }
+        }
     }
 
     /**
