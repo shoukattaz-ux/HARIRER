@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.analysis.StyleScoreCalculator
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.model.Gender
@@ -47,6 +48,7 @@ import com.example.ui.screens.tryon.FaceShapeScreen
 import com.example.ui.screens.tryon.PaidAiStudioScreen
 import com.example.ui.screens.tryon.PhotoPreviewScreen
 import com.example.ui.screens.tryon.StyleGridScreen
+import com.example.ui.screens.tryon.StyleScoreScreen
 import com.example.ui.screens.tryon.TryHairstyleScreen
 import com.example.ui.screens.tryon.TryOnMode
 import com.example.ui.screens.tryon.TryOnProcessingScreen
@@ -89,11 +91,15 @@ fun HairStyleApp(
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val feedbackMessage by viewModel.userFeedback.collectAsState()
     val styleGrid by viewModel.styleGrid.collectAsState()
+    val sceneStudio by viewModel.sceneStudio.collectAsState()
+    val confirmedFaceShape by viewModel.confirmedFaceShape.collectAsState()
+    val skinUndertone by viewModel.skinUndertone.collectAsState()
     val context = LocalContext.current
 
     var quickChoiceItem by remember { mutableStateOf<HairstyleItem?>(null) }
     var showQuickSubscriptionDialog by remember { mutableStateOf(false) }
     var showGridUpgradeDialog by remember { mutableStateOf(false) }
+    var showSceneUpgradeDialog by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -168,6 +174,18 @@ fun HairStyleApp(
                 viewModel.subscribePaidVersion {
                     showGridUpgradeDialog = false
                     viewModel.unlockStyleGridTiles(context)
+                }
+            }
+        )
+    }
+
+    // Upgrade dialog for Style Score scenes once the free previews are used up
+    if (showSceneUpgradeDialog) {
+        PaidSubscriptionDialog(
+            onDismissRequest = { showSceneUpgradeDialog = false },
+            onConfirmPayTwoDollars = {
+                viewModel.subscribePaidVersion {
+                    showSceneUpgradeDialog = false
                 }
             }
         )
@@ -342,6 +360,7 @@ fun HairStyleApp(
                             initialGender = homeGender,
                             onPhotoSelected = { viewModel.setUserPhoto(it) },
                             onFaceShapeDetected = { viewModel.updateUserFaceShape(it) },
+                            onSkinToneDetected = { viewModel.updateSkinTone(it) },
                             onSelectHairstyle = { id -> navigateTo(AppScreen.Detail(id)) },
                             onTryLive = { item ->
                                 viewModel.setActiveTryOnItem(item)
@@ -373,6 +392,28 @@ fun HairStyleApp(
                                 if (isPaidVersion) viewModel.unlockStyleGridTiles(context)
                                 else showGridUpgradeDialog = true
                             },
+                            onBack = { popBack() }
+                        )
+                    }
+
+                    is AppScreen.StyleScore -> {
+                        val score = remember(activeTryOnItem, confirmedFaceShape, skinUndertone, selectedColorTint) {
+                            activeTryOnItem?.let {
+                                StyleScoreCalculator.calculate(it, confirmedFaceShape, skinUndertone, selectedColorTint)
+                            }
+                        }
+                        StyleScoreScreen(
+                            hairstyle = activeTryOnItem,
+                            lookBitmap = aiResultBitmap,
+                            styleScore = score,
+                            sceneStudio = sceneStudio,
+                            isPaidVersion = isPaidVersion,
+                            remainingFreeQuota = remainingFreeQuota,
+                            maxDailyQuota = viewModel.maxDailyQuota,
+                            onGenerateScene = { scene, renderStyle ->
+                                viewModel.generateScene(context, scene, renderStyle)
+                            },
+                            onUpgrade = { showSceneUpgradeDialog = true },
                             onBack = { popBack() }
                         )
                     }
@@ -544,7 +585,11 @@ fun HairStyleApp(
                             onTryAgain = {
                                 navigateTo(AppScreen.PhotoPreview(item?.id))
                             },
-                            onBack = { popBack() }
+                            onBack = { popBack() },
+                            onOpenStyleScore = {
+                                viewModel.prepareSceneStudio()
+                                navigateTo(AppScreen.StyleScore)
+                            }
                         )
                     }
 

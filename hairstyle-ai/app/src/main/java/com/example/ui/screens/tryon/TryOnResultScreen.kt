@@ -101,7 +101,8 @@ fun TryOnResultScreen(
     onChangeHairstyle: () -> Unit,
     onTryAgain: () -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenStyleScore: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
     var isShowingBefore by remember { mutableStateOf(false) }
@@ -728,6 +729,36 @@ fun TryOnResultScreen(
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Share",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            // [Style Score] Button: score + lifestyle scenes for this look
+            if (onOpenStyleScore != null && aiResultBitmap != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = onOpenStyleScore,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .height(52.dp)
+                        .testTag("result_style_score_btn"),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ElectricViolet,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AutoAwesome,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "See My Style Score",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )

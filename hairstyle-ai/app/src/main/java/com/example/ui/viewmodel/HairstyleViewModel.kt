@@ -7,12 +7,18 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.R
+import com.example.analysis.HairColorAdvisor
 import com.example.data.api.AiHairstyleService
+import com.example.data.api.AiImageEditService
+import com.example.data.api.LifestyleScene
+import com.example.data.api.SceneRenderStyle
+import com.example.data.api.ScenePromptBuilder
 import com.example.data.api.AiTryOnConfig
 import com.example.data.model.Gender
 import com.example.data.model.GridTileState
 import com.example.data.model.HairstyleItem
 import com.example.data.model.ProcessingStage
+import com.example.data.model.SceneStudioState
 import com.example.data.model.StyleGridState
 import com.example.data.model.TryOnError
 import com.example.data.model.TryOnHistoryItem
@@ -36,13 +42,15 @@ import kotlinx.coroutines.launch
 class HairstyleViewModel(
     application: Application,
     private val aiService: AiHairstyleService,
-    private val quotaManager: AiQuotaManager
+    private val quotaManager: AiQuotaManager,
+    private val sceneService: AiImageEditService
 ) : AndroidViewModel(application) {
 
     constructor(application: Application) : this(
         application = application,
         aiService = GeminiTryOnRepository,
-        quotaManager = AiQuotaManager
+        quotaManager = AiQuotaManager,
+        sceneService = GeminiTryOnRepository
     )
 
     // App Theme Preference (Light vs Dark)
@@ -525,6 +533,65 @@ class HairstyleViewModel(
         }
     }
 
+    // Style Score lifestyle scenes for the current try-on look
+    private val _sceneStudio = MutableStateFlow(SceneStudioState())
+    val sceneStudio: StateFlow<SceneStudioState> = _sceneStudio.asStateFlow()
+
+    private var sceneJob: Job? = null
+
+    /** Starts a fresh scene set when the current look differs from the one the scenes were made for. */
+    fun prepareSceneStudio() {
+        val lookId = _aiResultBitmap.value?.let { System.identityHashCode(it) } ?: 0
+        if (_sceneStudio.value.lookId != lookId) {
+            sceneJob?.cancel()
+            _sceneStudio.value = SceneStudioState(lookId = lookId)
+        }
+    }
+
+    /**
+     * Generates one lifestyle scene from the current try-on result (user-initiated, no retries).
+     * Free tier: uses one free preview per successful scene; locked when none are left.
+     */
+    fun generateScene(context: Context, scene: LifestyleScene, renderStyle: SceneRenderStyle) {
+        val source = _aiResultBitmap.value ?: return
+        val style = _activeTryOnItem.value ?: return
+        val state = _sceneStudio.value
+        if (state.isGenerating) return
+
+        val key = SceneStudioState.key(scene, renderStyle)
+        val isPaid = _isPaidVersion.value
+        if (!isPaid && !quotaManager.canGenerate()) {
+            _sceneStudio.update { it.copy(scenes = it.scenes + (key to GridTileState.Locked)) }
+            return
+        }
+
+        val lookId = state.lookId
+        val appContext = context.applicationContext
+        _sceneStudio.update { it.copy(isGenerating = true, scenes = it.scenes + (key to GridTileState.Generating)) }
+        sceneJob = viewModelScope.launch {
+            try {
+                val prompt = ScenePromptBuilder.buildScenePrompt(style, scene, renderStyle)
+                val tile = when (val result = sceneService.editImage(appContext, UserPhotoSource.Captured(source), prompt)) {
+                    is AiTryOnResult.Success -> {
+                        if (!isPaid) quotaManager.recordSuccess()
+                        GridTileState.Ready(result.resultBitmap, result.isAiGenerated)
+                    }
+                    is AiTryOnResult.Error -> GridTileState.Failed(
+                        result.error,
+                        result.detailedMessage ?: result.error.message
+                    )
+                }
+                if (_sceneStudio.value.lookId == lookId) {
+                    _sceneStudio.update { it.copy(scenes = it.scenes + (key to tile)) }
+                }
+            } finally {
+                if (_sceneStudio.value.lookId == lookId) {
+                    _sceneStudio.update { it.copy(isGenerating = false) }
+                }
+            }
+        }
+    }
+
     /**
      * Privacy requirement: allows users to delete current transformation result.
      */
@@ -574,6 +641,19 @@ class HairstyleViewModel(
 
     fun updateUserFaceShape(faceShape: String) {
         _userProfile.update { it.copy(faceShape = faceShape) }
+        _confirmedFaceShape.value = faceShape
+    }
+
+    // Face shape detected or chosen by the user (null until then), used by the Style Score
+    private val _confirmedFaceShape = MutableStateFlow<String?>(null)
+    val confirmedFaceShape: StateFlow<String?> = _confirmedFaceShape.asStateFlow()
+
+    // Skin undertone from the AI Face Scan, used for the Style Score color harmony
+    private val _skinUndertone = MutableStateFlow<HairColorAdvisor.Undertone?>(null)
+    val skinUndertone: StateFlow<HairColorAdvisor.Undertone?> = _skinUndertone.asStateFlow()
+
+    fun updateSkinTone(skinTone: HairColorAdvisor.SkinToneResult?) {
+        if (skinTone != null) _skinUndertone.value = skinTone.undertone
     }
 
     fun updateUserHairType(hairType: String) {

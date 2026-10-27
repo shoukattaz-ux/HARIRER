@@ -10,6 +10,7 @@ import android.util.Base64
 import android.util.Log
 import com.example.BuildConfig
 import com.example.data.api.AiHairstyleService
+import com.example.data.api.AiImageEditService
 import com.example.data.api.AiTryOnConfig
 import com.example.data.api.GeminiApiService
 import com.example.data.api.GeminiContent
@@ -53,7 +54,7 @@ sealed class AiTryOnResult {
  * - Clean error mapping according to Free Tier specifications
  * - Modular design enabling future transition to production backends
  */
-object GeminiTryOnRepository : AiHairstyleService {
+object GeminiTryOnRepository : AiHairstyleService, AiImageEditService {
 
     private const val TAG = "GeminiTryOn"
     private const val BASE_URL = "https://generativelanguage.googleapis.com/"
@@ -106,6 +107,20 @@ object GeminiTryOnRepository : AiHairstyleService {
         userPhoto: UserPhotoSource,
         hairstyle: HairstyleItem,
         colorTint: String?
+    ): AiTryOnResult {
+        // Build detailed hairstyle instruction prompt preserving identity & facial features
+        val prompt = HairstylePromptBuilder.buildTransformationPrompt(hairstyle, colorTint)
+        return editImage(context, userPhoto, prompt)
+    }
+
+    /**
+     * Sends one photo plus an instruction prompt to the Gemini image model and returns the edited image.
+     * Shared by hairstyle try-on and Style Score lifestyle scenes; same single-request, no-retry rules.
+     */
+    override suspend fun editImage(
+        context: Context,
+        photo: UserPhotoSource,
+        prompt: String
     ): AiTryOnResult = withContext(Dispatchers.IO) {
         val apiKey = try {
             BuildConfig.GEMINI_API_KEY
@@ -123,7 +138,7 @@ object GeminiTryOnRepository : AiHairstyleService {
         }
 
         // 2. Decode & normalize user photo
-        val photoBitmap = resolveToBitmap(context, userPhoto)
+        val photoBitmap = resolveToBitmap(context, photo)
         if (photoBitmap == null) {
             return@withContext AiTryOnResult.Error(
                 TryOnError.InvalidImageFormat,
@@ -138,9 +153,6 @@ object GeminiTryOnRepository : AiHairstyleService {
                 "Please choose a clear face photo and try again."
             )
         }
-
-        // 3. Build detailed hairstyle instruction prompt preserving identity & facial features
-        val prompt = HairstylePromptBuilder.buildTransformationPrompt(hairstyle, colorTint)
 
         val request = GeminiGenerateRequest(
             contents = listOf(

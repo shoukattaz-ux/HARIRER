@@ -129,6 +129,7 @@ fun AiFaceScanScreen(
     initialGender: Gender,
     onPhotoSelected: (UserPhotoSource) -> Unit,
     onFaceShapeDetected: (String) -> Unit,
+    onSkinToneDetected: (HairColorAdvisor.SkinToneResult?) -> Unit,
     onSelectHairstyle: (String) -> Unit,
     onTryLive: (HairstyleItem) -> Unit,
     onGenerateLooks: (List<HairstyleItem>) -> Unit,
@@ -206,6 +207,7 @@ fun AiFaceScanScreen(
             phase = ScanPhase.LOCKED
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             onFaceShapeDetected(result.detectedShape)
+            onSkinToneDetected(tone)
         }
     }
 
